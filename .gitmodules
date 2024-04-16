@@ -1,0 +1,4 @@
+[submodule "src/tools"]
+	path = src/tools
+	url = git@github.com:kaljan/tools.git
+	branch = develop
