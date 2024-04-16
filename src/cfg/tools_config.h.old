@@ -1,0 +1,14 @@
+/**
+ * @file    tools_opt.h
+ * @author  Nikolai Naurotski (kaljan.nothern@gmail.com)
+ * @version 1.0.0
+ * @date    27.12.2022
+ *
+ * @brief
+ */
+#ifndef TOOLS_CONFIG_H
+#define TOOLS_CONFIG_H
+
+
+
+#endif /* TOOLS_OPT_H */

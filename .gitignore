@@ -6,3 +6,5 @@
 *_Rebug/
 temp/
 tmp/
+*.svd
+version/
