@@ -17,8 +17,10 @@
 #define MC6800_RS_PORT                      GPIOA
 #define MC6800_RS_PIN                       8U
 
+#if (HAL_MC6800_READ == HAL_ENABLED)
 #define MC6800_RW_PORT                      GPIOA
 #define MC6800_RW_PIN                       10U
+#endif
 
 #if (HAL_MC6800_DATA_WIDTH == HAL_MC6800_DATA8)
 #define MC6800_D0_PORT                      GPIOB

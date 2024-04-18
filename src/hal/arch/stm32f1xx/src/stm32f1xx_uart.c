@@ -8,7 +8,6 @@
  *
  */
 #include "stm32f1xx_uart.h"
-#include "gpio_markers.h"
 
 #define UART_TX_FIFO_FLAG   0x10
 
@@ -21,28 +20,22 @@ void UART_IRQHandler(UART_t * context) {
 
     if (HAL_IS_BIT_SET(handle->CR1, USART_CR1_RXNEIE) &&
         HAL_IS_BIT_SET(handle->SR, USART_SR_RXNE)) {
-        mSetMarker6();
         tools_fifo_put(&context->rxFIFO, (uint8_t)handle->DR);
-        mResetMarker6();
     }
 
     if (HAL_IS_BIT_SET(handle->CR1, USART_CR1_TXEIE) &&
         HAL_IS_BIT_SET(handle->SR, USART_SR_TXE)) {
         uint8_t data;
-        mSetMarker4();
         if (tools_fifo_get(&context->txFIFO, &data) < 0) {
-            mSetMarker5();
             HAL_CLEAR_BITS(handle->CR1, USART_CR1_TXEIE);
             HAL_SET_BITS(handle->CR1, USART_CR1_TCIE);
         } else {
             handle->DR = data;
         }
-        mResetMarker4();
     }
 
     if (HAL_IS_BIT_SET(handle->CR1, USART_CR1_TCIE) &&
         HAL_IS_BIT_SET(handle->SR, USART_SR_TC)) {
-        mResetMarker5();
         handle->SR = ~(USART_SR_TC);
         HAL_CLEAR_BITS(handle->CR1, USART_CR1_TCIE);
         context->flags &= ~UART_TX_FIFO_FLAG;
@@ -58,7 +51,6 @@ void UART_IRQHandler(UART_t * context) {
         HAL_IS_BIT_SET(handle->SR, USART_SR_NE) ||
         HAL_IS_BIT_SET(handle->SR, USART_SR_ORE)) {
         volatile uint32_t tmp;
-        mToggleMarker7();
         tmp = handle->SR;
         __DSB();
         tmp = handle->DR;
@@ -169,22 +161,18 @@ int hal_uart_put(hal_object_t ctx, uint8_t ch) {
     if (NULL == context) {
         return ret;
     }
-    mSetMarker0();
     NVIC_DisableIRQ(context->irqn);
     ret = tools_fifo_put(&context->txFIFO, ch);
 
     if (HAL_IS_BIT_CLEAR(context->flags, UART_TX_FIFO_FLAG)) {
         uint8_t c;
-        mSetMarker1();
         if (tools_fifo_get(&context->txFIFO, &c) == 0) {
             context->flags |= UART_TX_FIFO_FLAG;
             context->handle->DR = c;
             HAL_SET_BITS(context->handle->CR1, USART_CR1_TXEIE);
-            mResetMarker1();
         }
     }
     NVIC_EnableIRQ(context->irqn);
-    mResetMarker0();
     return ret;
 }
 
@@ -194,11 +182,9 @@ int hal_uart_get(hal_object_t ctx, uint8_t* c) {
     if (NULL == context) {
         return ret;
     }
-    mSetMarker2();
     NVIC_DisableIRQ(context->irqn);
     ret = tools_fifo_get(&context->rxFIFO, c);
     NVIC_EnableIRQ(context->irqn);
-    mResetMarker2();
     return ret;
 }
 
@@ -255,9 +241,7 @@ static UART_t uart2_instance = {
 };
 
 void USART2_IRQHandler(void) {
-    mSetMarker3();
     UART_IRQHandler(&uart2_instance);
-    mResetMarker3();
 }
 
 hal_object_t hal_uart_get_handle(int id) {

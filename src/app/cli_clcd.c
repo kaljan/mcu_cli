@@ -6,7 +6,6 @@
  *
  * @brief
  */
-#include "cli_clcd.h"
 #include "cli.h"
 #include "clcd.h"
 

@@ -6,7 +6,6 @@
  *
  * @brief
  */
-#include "cli_info.h"
 #include "stm32f1xx.h"
 #include "cli.h"
 #include "version.h"

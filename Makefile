@@ -94,10 +94,11 @@ CLI_SRC = \
 	$(CLI_DIR)/src/cli_exec.c
 
 APP_SRC = \
-	$(APP_DIR)/src/cli_gpio.c \
-	$(APP_DIR)/src/cli_info.c \
-	$(APP_DIR)/src/cli_reset.c \
-	$(APP_DIR)/src/cli_clcd.c
+	$(APP_DIR)/cli_gpio.c \
+	$(APP_DIR)/cli_info.c \
+	$(APP_DIR)/cli_reset.c \
+	$(APP_DIR)/cli_echo.c \
+	$(APP_DIR)/cli_clcd.c
 
 C_SOURCES = \
 	$(SYSTEM_CSRC) \
@@ -119,7 +120,6 @@ C_INCLUDES = \
 	-I$(SRC_DIR) \
 	-I$(SRC_DIR)/cfg \
 	-I$(CLI_DIR)/inc \
-	-I$(APP_DIR)/inc \
 	-I$(CMSIS_DEV_STM32F1XX_DIR)/Include \
 	-I$(CMSIS_DIR)/Include \
 	-I$(HAL_DIR)/arch/stm32f1xx/inc \

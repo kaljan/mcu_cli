@@ -6,7 +6,6 @@
  *
  * @brief
  */
-#include "cli_reset.h"
 #include "cli.h"
 #include "stm32f1xx.h"
 #include "hal_tim.h"

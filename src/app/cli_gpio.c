@@ -10,7 +10,6 @@
  * 18844    1060   10960   30864
  *
  */
-#include "cli_gpio.h"
 #include "stm32f1xx_gpio.h"
 #include "hal_gpio.h"
 #include "cli.h"
