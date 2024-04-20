@@ -6,10 +6,11 @@
  *
  * @brief
  */
+
 #include "cli.h"
 #include "stm32f1xx.h"
 #include "hal_tim.h"
-#include <stdio.h>
+
 
 static int cli_reset_main(int argc, char** argv) {
     printf("\r\nSoftware reset\r\n\r\n");
@@ -33,5 +34,5 @@ static cli_node_t cli_reset_cmd = {
 };
 
 void cli_reset_init(void) {
-    cli_append_command(&cli_reset_cmd);
+    cli_regcmd(&cli_reset_cmd);
 }

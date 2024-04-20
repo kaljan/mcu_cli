@@ -6,10 +6,10 @@
  *
  * @brief
  */
+
 #include "cli_history.h"
 #include "cli.h"
-#include <string.h>
-#include <stdio.h>
+
 
 #define CH_TEXT_SIZE    1024
 #define CH_CMD_MAX      CH_TEXT_SIZE / 8
@@ -176,6 +176,6 @@ static cli_node_t cli_history_cmd = {
 
 void cli_history_cmd_init(void) {
     cli_history_clear();
-    cli_append_command(&cli_history_cmd);
+    cli_regcmd(&cli_history_cmd);
 }
 

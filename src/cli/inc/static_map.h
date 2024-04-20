@@ -4,8 +4,9 @@
  * @version 0.0.0
  * @date    2024-03-23
  *
- * @brief
+ * @brief   Static hash map for CLI
  */
+
 #ifndef STATIC_MAP_H
 #define STATIC_MAP_H
 

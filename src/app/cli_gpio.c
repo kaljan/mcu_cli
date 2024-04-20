@@ -5,17 +5,12 @@
  * @date    2024-04-02
  *
  * @brief
- *
- * 18856    1060    3792   23708
- * 18844    1060   10960   30864
- *
  */
+
 #include "stm32f1xx_gpio.h"
 #include "hal_gpio.h"
 #include "cli.h"
-#include <stdio.h>
-#include <ctype.h>
-#include <stdlib.h>
+
 
 #define DO_NOT_USE      0   /* Do not use */
 #define IN_EN      0x01 /* Input configuration enabled */
@@ -75,8 +70,7 @@ static cli_gpio_pin_t gpio_b_pin_list[16] = {
     {15, 28, IN_EN | OUT_EN, "unused"},
 };
 
-//    text    data     bss     dec     hex filename
-//   20356     980    4432   25768    64a8 mcu_cli_Debug/mcu_cli.elf
+
 static cli_gpio_pin_t gpio_c_pin_list[3] = {
     {13,  2, OUT_EN,         "LED"},
     {14,  3, DO_NOT_USE,     "OSC32I"},
@@ -268,7 +262,6 @@ static void cli_gpio_pin_config_to_str(char* buf, uint32_t buf_size, GPIO_PinCon
     }
 }
 
-/* PXYY NNN <label> <DIR> <MODE> <OTYPE> <SPEED> */
 static void cli_gpio_pin_str_info(char* buf, uint32_t buf_size, GPIO_Pin_t* pin, cli_gpio_pin_t* cli_pin) {
     if ((NULL != cli_pin) && (pin != NULL) && (NULL != buf) && (buf_size > 0)) {
         GPIO_PinConfig_t cfg;
@@ -365,27 +358,8 @@ static cli_node_t cli_gpio_info_cmd = {
 };
 
 void cli_gpio_info_cmd_init(void) {
-    cli_append_command(&cli_gpio_info_cmd);
+    cli_regcmd(&cli_gpio_info_cmd);
 }
-
-// static cli_gpio_port_get
-
-// static cli_gpio_pin_t* cli_gpio_pin_get(char c, int i) {
-//     if (((c == 'A') || (c == 'a')) && (i < 16)) {
-//         return &gpio_a[i];
-//     } else if (((c == 'B') || (c == 'b')) && (i < 16)) {
-//         return &gpio_b[i];
-//     } else if (((c == 'C') || (c == 'c')) && (i < 16)) {
-//         for (int i = 0; i < 3; i++) {
-//             if (gpio_c[i].pin.pin == i) {
-//                 return &gpio_c[i];
-//             }
-//         }
-//     } else if (((c == 'D') || (c == 'd')) && (i < 2)) {
-//         return &gpio_d[i];
-//     }
-//     return NULL;
-// }
 
 /* GPIO Direction */
 
@@ -402,11 +376,7 @@ static void cli_gpio_dir_cmd_help(void) {
         "\r\n"
     );
 }
-//    text    data     bss     dec     hex filename
-//   21124    1012    4432   26568    67c8 mcu_cli_Debug/mcu_cli.elf
-//   21128    1012    4432   26572    67cc mcu_cli_Debug/mcu_cli.elf
-//   21516    1012    4432   26960    6950 mcu_cli_Debug/mcu_cli.elf
-//   21552    1012    4432   26996    6974 mcu_cli_Debug/mcu_cli.elf
+
 const char* cli_gpio_pin_dir_str(int dir) {
     if (dir == HAL_GPIO_DIR_OUT) {
         return "OUTPUT";
@@ -481,7 +451,7 @@ static cli_node_t cli_gpio_dir_cmd = {
 };
 
 void cli_gpio_dir_cmd_init(void) {
-    cli_append_command(&cli_gpio_dir_cmd);
+    cli_regcmd(&cli_gpio_dir_cmd);
 }
 
 
@@ -535,7 +505,7 @@ static cli_node_t cli_gpio_set_cmd = {
 };
 
 void cli_gpio_set_cmd_init(void) {
-    cli_append_command(&cli_gpio_set_cmd);
+    cli_regcmd(&cli_gpio_set_cmd);
 }
 
 /* GPIO Get input value */
@@ -556,32 +526,5 @@ static cli_node_t cli_gpio_get_cmd = {
 };
 
 void cli_gpio_get_cmd_init(void) {
-    cli_append_command(&cli_gpio_get_cmd);
+    cli_regcmd(&cli_gpio_get_cmd);
 }
-
-
-// static void cli_gpio_pin_print_info(char p, int n) {
-//     GPIO_Pin_t gpio_pin = {NULL, 0};
-//     cli_gpio_pin_t* cli_pin = cli_gpio_pin_get(&gpio_pin, p, n);
-//     if (NULL != cli_pin) {
-//         char str[64];
-//         cli_gpio_pin_str_info(str, 64, &gpio_pin, cli_pin);
-//         printf("%s\r\n", str);
-//         // char pin_name[8];
-//         // GPIO_PinConfig_t cfg;
-
-//         // snprintf(pin_name, 8, "P%c%d", toupper(p), n);
-//         // GPIO_PinGetConfig(gpio_pin.port, gpio_pin.pin, &cfg);
-
-//         // printf(" %3d %s %s %s %s %s %s %s\r\n"
-//         //     , cli_pin->pin_no
-//         //     , pin_name
-//         //     , cli_pin->label
-//         //     , gpio_flags_str(cli_pin->flags)
-//         //     , gpio_mode_str(cfg.mode)
-//         //     , gpio_otype_str(cfg.outType)
-//         //     , gpio_speed_str(cfg.speed)
-//         //     , gpio_pull_str(cfg.pull)
-//         // );
-//     }
-// }

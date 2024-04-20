@@ -6,12 +6,10 @@
  *
  * @brief
  */
+
 #include "cli.h"
 #include "clcd.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 static int cli_clcd_print_main(int argc, char** argv) {
     if (argc < 3) {
@@ -34,7 +32,6 @@ static int cli_clcd_print_main(int argc, char** argv) {
         int len = strlen(*argv);
         if (len > 32) {
         }
-        // memmove()
     }
 
     return 0;
@@ -52,5 +49,5 @@ static cli_node_t cli_clcd_print_cmd = {
 };
 
 void cli_clcd_print_init(void) {
-    cli_append_command(&cli_clcd_print_cmd);
+    cli_regcmd(&cli_clcd_print_cmd);
 }

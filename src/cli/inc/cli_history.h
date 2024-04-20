@@ -6,6 +6,7 @@
  *
  * @brief
  */
+
 #ifndef CLI_HISTORY_H
 #define CLI_HISTORY_H
 

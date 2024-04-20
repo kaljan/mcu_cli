@@ -6,12 +6,11 @@
  *
  * @brief
  */
+
 #include "cli.h"
 #include "cli_exec.h"
 #include "cli_history.h"
-#include "version.h"
-#include <stdio.h>
-#include <string.h>
+
 
 static int cli_cmd_argc = 0;
 static char* cli_cmd_argv[CLI_ARGV_SIZE];
@@ -139,7 +138,7 @@ void cli_exec_cmd(const char* cmd, int size) {
     }
 }
 
-void cli_append_command(cli_node_t* item) {
+void cli_regcmd(cli_node_t* item) {
     if (NULL != item) {
         item->node.key = item->c_name;
         item->node.value = item;
@@ -208,5 +207,5 @@ static cli_node_t cli_help_cmd = {
 };
 
 void cli_help_cmd_init(void) {
-    cli_append_command(&cli_help_cmd);
+    cli_regcmd(&cli_help_cmd);
 }

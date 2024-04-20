@@ -6,12 +6,10 @@
  *
  * @brief
  */
+
 #include "cli.h"
 #include "clcd.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 static int cli_echo_main(int argc, char** argv) {
     argv++;
@@ -42,7 +40,7 @@ static cli_node_t cli_echo_cmd = {
 };
 
 void cli_echo_init(void) {
-    cli_append_command(&cli_echo_cmd);
+    cli_regcmd(&cli_echo_cmd);
 }
 
 

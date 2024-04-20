@@ -6,19 +6,11 @@
  *
  * @brief
  */
+
 #include "stm32f1xx.h"
 #include "cli.h"
-#include "version.h"
 #include "stm32f1xx_rcc.h"
-#include <stdio.h>
 
-/*
-17052     208    3872   21132
-17012     240    3840   21092
-16972     272    3808   21052
-16952     284    3792   21028
-16952     284    3792   21028
-*/
 
 static int cli_info_main(int argc, char** argv) {
     RCC_ClockFreq_t ckcfg;
@@ -79,63 +71,5 @@ static cli_node_t cli_info_cmd = {
 };
 
 void cli_info_init(void) {
-    cli_append_command(&cli_info_cmd);
+    cli_regcmd(&cli_info_cmd);
 }
-
-
-// static int cli_help_cmd_iter_fn(const char* key, void* object) {
-//     cli_node_t* context = (cli_node_t*)object;
-//     if ((NULL != context) && (NULL != context->c_name) && (NULL != context->brief)) {
-//         printf("%s : %s\r\n", context->c_name, context->brief);
-//     }
-//     return 0;
-// }
-
-// static int cli_help_cmd_main(int argc, char** argv) {
-//     if (argc < 2) {
-//         printf("\r\n");
-//         static_map_foreach(&cli_map, cli_help_cmd_iter_fn);
-//         printf("\r\n");
-//     } else {
-//         cli_node_t* item = static_map_get(&cli_map, *(argv+1));
-//         if ((NULL != item) && (NULL != item->help_fn)) {
-//             item->help_fn();
-//         }
-//     }
-//     return 0;
-// }
-
-// static uint32_t cli_info_uid[3];
-
-// /**
-//   * @brief  Get Word0 of the unique device identifier (UID based on 96 bits)
-//   * @retval UID[31:0]
-//   */
-// __STATIC_INLINE uint32_t LL_GetUID_Word0(void)
-// {
-//   return (uint32_t)(READ_REG(*((uint32_t *)UID_BASE_ADDRESS)));
-// }
-
-// /**
-//   * @brief  Get Word1 of the unique device identifier (UID based on 96 bits)
-//   * @retval UID[63:32]
-//   */
-// __STATIC_INLINE uint32_t LL_GetUID_Word1(void)
-// {
-//   return (uint32_t)(READ_REG(*((uint32_t *)(UID_BASE_ADDRESS + 4U))));
-// }
-
-// /**
-//   * @brief  Get Word2 of the unique device identifier (UID based on 96 bits)
-//   * @retval UID[95:64]
-//   */
-// __STATIC_INLINE uint32_t LL_GetUID_Word2(void)
-// {
-//   return (uint32_t)(READ_REG(*((uint32_t *)(UID_BASE_ADDRESS + 8U))));
-// }
-
-// UID_BASE
-/**
- * @brief Unique device ID register base address
- */
-// #define UID_BASE_ADDRESS              UID_BASE
