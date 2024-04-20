@@ -85,7 +85,7 @@
 
 /* Private variables */
 
-static const char* cli_io_prompt = ">";
+static const char* cli_io_prompt = CLI_PROMPT;
 
 static int cli_io_flags = 0;
 
@@ -652,25 +652,13 @@ static void cli_io(int c) {
 
 /* Public functions */
 
-void cli_start(cli_config_t* config) {
-    const char* hello_msg = "\r\nCommand line interface for MCUs\r\n";
+void cli_start(void) {
+    const char* hello_msg = CLI_HELLO_MSG;
     cli_history_clear();
     cli_exec_init();
     cli_history_cmd_init();
 
-    if (config != NULL) {
-        if (config->prompt != NULL) {
-            cli_io_prompt = config->prompt;
-        }
-
-        if (config->hello_msg != NULL) {
-            hello_msg = config->hello_msg;
-        }
-
-        if (config->init_cmds_fn != NULL) {
-            config->init_cmds_fn();
-        }
-    }
+    cli_register_commands();
 
     cli_help_cmd_init();
 
@@ -680,6 +668,7 @@ void cli_start(cli_config_t* config) {
         , MCLI_VERSION_MINOR
         , MCLI_VERSION_BUILD
         , cli_io_prompt);
+
     fflush(stdout);
 }
 

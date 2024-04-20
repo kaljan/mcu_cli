@@ -10,18 +10,17 @@
 #ifndef CLI_H
 #define CLI_H
 
+
+#include "cli_opt.h"
+
 #include "static_map.h"
 #include "version.h"
+
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-
-#define CLI_CMD_COUNT           10 /* WARNING: Set command count */
-#define CLI_BUF_SIZE            128
-#define CLI_ARGV_SIZE           32
-#define CLI_ESC_BUF_SIZE        16
 
 /* Flags */
 #define CLI_ESC_MASK            0x0F
@@ -48,32 +47,12 @@ typedef struct cli_node {
     sm_node_t node;
 } cli_node_t;
 
-/**
- * Command line interface config
- */
-typedef struct cli_config {
-    /* Poniter to hello message */
-    const char* hello_msg;
-
-    /* Pointer to command line prompt string */
-    const char* prompt;
-
-    /* Pointer to command init function */
-    void (*init_cmds_fn)(void);
-} cli_config_t;
-
 /* IO functions */
-
-#define putchar_fn(c)   __io_putchar(c)
-#define getchar_fn()    __io_getchar()
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
-
-int __io_putchar(int ch);
-int __io_getchar(void);
 
 /**
  * Register command
@@ -87,7 +66,7 @@ void cli_regcmd(cli_node_t* cmd);
  *
  * @param config pointer to configuration structure
  */
-void cli_start(cli_config_t* config);
+void cli_start(void);
 
 /**
  * Updage command line

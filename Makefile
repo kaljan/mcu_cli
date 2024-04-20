@@ -109,6 +109,7 @@ C_SOURCES = \
 	$(CLI_SRC) \
 	$(APP_SRC) \
 	$(SRC_DIR)/cfg/cfg_stm32f1xx_gpio.c \
+	$(SRC_DIR)/cfg/cli_config.c \
 	$(SRC_DIR)/main.c
 
 
@@ -142,8 +143,10 @@ C_DEFINES = \
 	-DLSE_STARTUP_TIMEOUT=5000 \
 	-DLSE_VALUE=32768 \
 	-DLSI_VALUE=40000 \
+	-DVDD_VALUE=3300 \
 	-DTOOLS_OPT=\"tools_config.h\" \
-	-DVDD_VALUE=3300
+	-DCLI_OPT=\"cli_config.h\"
+
 
 ifeq ($(DEBUG), 1)
 C_DEFINES += \
