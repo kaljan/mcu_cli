@@ -14,9 +14,8 @@
 extern "C" {
 #endif /* __cplusplus */
 
-const char** cli_exec_acplt(const char* expr, int len, int*const num);
+cli_node_t* cli_exec_cplt(const char* expr, int len, int*const num);
 void cli_exec_cmd(const char* cmd, int size);
-void cli_exec_init(void);
 void cli_help_cmd_init(void);
 
 #ifdef __cplusplus

@@ -88,7 +88,6 @@ DRIVERS_SRC = \
 	$(DRIVERS_DIR)/rcu/stm32f1xx_rcu.c
 
 CLI_SRC = \
-	$(CLI_DIR)/src/static_map.c \
 	$(CLI_DIR)/src/cli_history.c \
 	$(CLI_DIR)/src/cli_io.c \
 	$(CLI_DIR)/src/cli_exec.c

@@ -10,20 +10,15 @@
 #include "cli_history.h"
 #include "cli.h"
 
-
-#define CH_TEXT_SIZE    1024
-#define CH_CMD_MAX      CH_TEXT_SIZE / 8
-
-
 static int ch_cursor = 0;
-static char ch_buf[CH_TEXT_SIZE];
+static char ch_buf[CLI_HISTORY_BUF_LEN];
 
 static char* ch_head_ptr = NULL;
 static char* ch_tail_ptr = NULL;
 static char* ch_curr_ptr = NULL;
 
 static char* const ch_buf_start = ch_buf;
-static char* const ch_buf_end = &ch_buf[CH_TEXT_SIZE - 1];
+static char* const ch_buf_end = &ch_buf[CLI_HISTORY_BUF_LEN - 1];
 
 
 void cli_history_clear(void) {
@@ -31,7 +26,7 @@ void cli_history_clear(void) {
     ch_tail_ptr = NULL;
     ch_curr_ptr = NULL;
     ch_cursor = 0;
-    memset(ch_buf, 0, CH_TEXT_SIZE);
+    memset(ch_buf, 0, CLI_HISTORY_BUF_LEN);
 }
 
 void cli_history_add(const char* cmd) {
@@ -39,7 +34,7 @@ void cli_history_add(const char* cmd) {
         char* ptr = NULL;
         ch_curr_ptr = NULL;
         if (NULL == ch_head_ptr) {
-            if (strlen(cmd) >= CH_TEXT_SIZE) {
+            if (strlen(cmd) >= CLI_HISTORY_BUF_LEN) {
                 return;
             }
             ch_head_ptr = ch_buf;
@@ -49,7 +44,7 @@ void cli_history_add(const char* cmd) {
             }
             ch_cursor++;
             return;
-        } else if (strlen(cmd) >= CH_TEXT_SIZE - ch_cursor) {
+        } else if (strlen(cmd) >= CLI_HISTORY_BUF_LEN - ch_cursor) {
             ch_cursor = 0;
             ptr = &ch_buf[ch_cursor];
         }

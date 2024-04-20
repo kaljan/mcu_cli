@@ -13,7 +13,6 @@
 
 #include "cli_opt.h"
 
-#include "static_map.h"
 #include "version.h"
 
 #include <ctype.h>
@@ -43,8 +42,11 @@ typedef struct cli_node {
     /* Pointer to print help function */
     void (*help_fn)(void);
 
-    /* Static map node */
-    sm_node_t node;
+    /* Next item in single linked list  */
+    struct cli_node* next;
+
+    /* Nex item in comman comletion list  */
+    struct cli_node* cplt_next;
 } cli_node_t;
 
 /* IO functions */

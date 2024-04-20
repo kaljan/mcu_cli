@@ -17,7 +17,7 @@
 #define CLI_BUF_SIZE            128
 #define CLI_ARGV_SIZE           32
 #define CLI_ESC_BUF_SIZE        16
-
+#define CLI_HISTORY_BUF_LEN    1024
 
 /* Enable command input history */
 #define CLI_HISTORY

@@ -96,10 +96,8 @@ static char cli_io_buf[CLI_BUF_SIZE];
 static int cli_io_csi_bytes = 0;
 static char cli_io_csi_buf[CLI_ESC_BUF_SIZE];
 
-static int cli_io_acplt_items = 0;
-static int cli_io_acplt_curr = 0;
-static const char** cli_io_acplt_buf = NULL;
-
+static int cli_io_cplt_items = 0;
+static cli_node_t* cli_io_cplt_curr = NULL;
 
 /* Private functions */
 
@@ -385,28 +383,25 @@ static void cli_io_kill(void) {
 /**
  * Complete command
  */
-static void cli_io_acplt(void) {
+static void cli_io_cplt(void) {
     if (cli_io_bytes > 0) {
-        if (cli_io_acplt_buf == NULL) {
+        if (cli_io_cplt_curr == NULL) {
             cli_io_buf[cli_io_bytes] = '\0';
-            cli_io_acplt_buf = cli_exec_acplt(cli_io_buf, cli_io_cursor, &cli_io_acplt_items);
-            cli_io_acplt_curr = 0;
+            cli_io_cplt_curr = cli_exec_cplt(cli_io_buf, cli_io_cursor, &cli_io_cplt_items);
         }
 
-        if ((cli_io_acplt_buf != NULL) && (cli_io_acplt_items > 0)) {
-            const char * src = cli_io_acplt_buf[cli_io_acplt_curr];
+        if ((cli_io_cplt_curr != NULL) && (cli_io_cplt_items > 0)) {
+            const char* ptr = cli_io_cplt_curr->c_name;
             cli_io_bytes = cli_io_cursor;
-            while (src[cli_io_bytes] != 0) {
-                cli_io_buf[cli_io_bytes] = src[cli_io_bytes];
+            while (ptr[cli_io_bytes] != 0) {
+                cli_io_buf[cli_io_bytes] = ptr[cli_io_bytes];
                 putchar_fn(cli_io_buf[cli_io_bytes]);
                 cli_io_bytes++;
             }
 
-            if (cli_io_acplt_items > 1) {
-                cli_io_acplt_curr++;
-                if (cli_io_acplt_curr >= cli_io_acplt_items) {
-                    cli_io_acplt_curr = 0;
-                }
+            if (cli_io_cplt_items > 1) {
+                cli_io_cplt_curr = cli_io_cplt_curr->cplt_next;
+
                 printf("\e[J");
                 fflush(stdout);
                 cli_io_mvcrs(cli_io_bytes - cli_io_cursor);
@@ -415,8 +410,8 @@ static void cli_io_acplt(void) {
                 putchar_fn(cli_io_buf[cli_io_bytes]);
                 cli_io_bytes++;
                 cli_io_cursor = cli_io_bytes;
-                cli_io_acplt_buf = NULL;
-                cli_io_acplt_items = 0;
+                cli_io_cplt_curr = NULL;
+                cli_io_cplt_items = 0;
             }
         }
     }
@@ -448,7 +443,8 @@ static inline void cli_io_ret(void) {
  *
  * @param c received character code
  */
-static void cli_io_ctrl(int c) {
+static int cli_io_ctrl(int c) {
+    int ret = 0;
     switch (c) {
     case CLI_CC_SOH:
         cli_io_mvcrsh();
@@ -479,8 +475,8 @@ static void cli_io_ctrl(int c) {
         break;
 
     case CLI_CC_TAB:
-        cli_io_acplt();
-        return;
+        cli_io_cplt();
+        return 0;
 
     case CLI_CC_VT:
         cli_io_clra();
@@ -512,12 +508,13 @@ static void cli_io_ctrl(int c) {
         break;
 
     default:
+        ret = c;
         break;
     }
 
-    cli_io_acplt_buf = NULL;
-    cli_io_acplt_curr = 0;
-    cli_io_acplt_items = 0;
+    cli_io_cplt_curr = NULL;
+    cli_io_cplt_items = 0;
+    return ret;
 }
 
 /**
@@ -655,11 +652,8 @@ static void cli_io(int c) {
 void cli_start(void) {
     const char* hello_msg = CLI_HELLO_MSG;
     cli_history_clear();
-    cli_exec_init();
     cli_history_cmd_init();
-
     cli_register_commands();
-
     cli_help_cmd_init();
 
     printf("\r\n%sVersion %d.%d.%d\r\n\r\n%s "
@@ -678,9 +672,7 @@ void cli_update(void) {
         return;
     } else if ((cli_io_flags & CLI_ESC_FLAG) == CLI_ESC_FLAG) {
         cli_io_esc(c);
-    } else if (c < ' ') {
-        cli_io_ctrl(c);
-    } else {
+    } else if (cli_io_ctrl(c) != 0) {
         cli_io(c);
     }
 }
