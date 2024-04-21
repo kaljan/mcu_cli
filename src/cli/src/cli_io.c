@@ -83,6 +83,7 @@
 #define CLI_CC_US               0x1F /* [ CTRL+_ ] INFORMATION SEPARATOR ONE (unit separator) */
 #define CLI_CC_DEL              0x7F /* [ CTRL+? ] DELETE */
 
+
 /* Private variables */
 
 static const char* cli_io_prompt = CLI_PROMPT;
@@ -98,6 +99,7 @@ static char cli_io_csi_buf[CLI_ESC_BUF_SIZE];
 
 static int cli_io_cplt_items = 0;
 static cli_node_t* cli_io_cplt_curr = NULL;
+
 
 /* Private functions */
 
@@ -156,9 +158,6 @@ static void cli_io_setcmd(const char* cmd) {
     }
 }
 
-
-/* Shortcuts functionality section */
-
 /**
  * Delete char under cursor
  */
@@ -169,117 +168,8 @@ static void cli_io_delchr(void) {
     cli_io_mvtxt(n);
 }
 
-/**
- * Delete char under cursor
- */
-void cli_io_delchrc(void) {
-    if ((cli_io_bytes > 0) && (cli_io_cursor < cli_io_bytes)) {
-        cli_io_delchr();
-    }
-}
 
-
-/**
- * Delete character before cursor
- */
-static void cli_io_backspace(void) {
-    if ((cli_io_bytes > 0) && (cli_io_cursor > 0)) {
-        if (cli_io_cursor == cli_io_bytes) {
-            cli_io_cursor--;
-            cli_io_bytes--;
-            printf("\b\e[J");
-            fflush(stdout);
-        } else if (cli_io_cursor < cli_io_bytes) {
-            int n = cli_io_bytes - cli_io_cursor;
-            cli_io_cursor--;
-            cli_io_bytes--;
-            putchar_fn('\b');
-            cli_io_mvtxt(n);
-        }
-    }
-}
-
-/**
- * Clear all after cursor
- */
-static void cli_io_clra(void) {
-    if ((cli_io_cursor > 0) && (cli_io_bytes > 0) &&
-        (cli_io_cursor < cli_io_bytes)) {
-        cli_io_cursor = 0;
-        cli_io_bytes = 0;
-        printf("\e[J");
-        fflush(stdout);
-    }
-}
-
-/**
- * Clear all before cursor
- */
-static void cli_io_clrb(void) {
-    if ((cli_io_cursor > 0) && (cli_io_bytes > 0)) {
-
-        printf("\r%s ", cli_io_prompt);
-        fflush(stdout);
-        if (cli_io_cursor < cli_io_bytes) {
-            for (int i = 0; i < cli_io_bytes - cli_io_cursor; i++) {
-                cli_io_buf[i] = cli_io_buf[i + cli_io_cursor];
-                putchar_fn(cli_io_buf[i]);
-            }
-            cli_io_bytes -= cli_io_cursor;
-            cli_io_cursor = 0;
-            printf("\e[J");
-            fflush(stdout);
-            cli_io_mvcrs(cli_io_bytes);
-        } else {
-            cli_io_cursor = 0;
-            cli_io_bytes = 0;
-            printf("\r%s \e[J", cli_io_prompt);
-            fflush(stdout);
-        }
-    }
-}
-
-/**
- * Delete word after cursor
- */
-static void cli_io_delworda(void) {
-    while ((cli_io_cursor < cli_io_bytes) && (cli_io_buf[cli_io_cursor] == ' ')) {
-        cli_io_delchr();
-    }
-
-    while ((cli_io_cursor < cli_io_bytes) && (cli_io_buf[cli_io_cursor] != ' ')) {
-        cli_io_delchr();
-    }
-}
-
-/**
- * Delete word before cursor
- */
-static void cli_io_delwordb(void) {
-    while ((cli_io_cursor > 0) && (cli_io_buf[cli_io_cursor - 1] == ' ')) {
-        cli_io_backspace();
-    }
-
-    while ((cli_io_cursor > 0) && (cli_io_buf[cli_io_cursor - 1] != ' ')) {
-        cli_io_backspace();
-    }
-}
-
-/**
- * Next item in the command history
- */
-static void cli_io_hstnext(void) {
-    const char* ptr = cli_history_get_next();
-    cli_io_setcmd(ptr);
-}
-
-/**
- * Previous item in the command history
- */
-static void cli_io_hstprev(void) {
-    const char* ptr = cli_history_get_prev();
-    cli_io_setcmd(ptr);
-}
+/* Shortcuts functionality section */
 
 /**
  * Move cursor right
@@ -298,34 +188,6 @@ static void cli_io_mvcrsl(void) {
     if (cli_io_cursor > 0) {
         cli_io_cursor--;
         putchar_fn('\b');
-    }
-}
-
-/**
- * Move cursor to beginnig of line
- */
-static void cli_io_mvcrsh(void) {
-    if ((cli_io_cursor > 0) && (cli_io_bytes > 0)) {
-        if (cli_io_cursor < 4) {
-            while (cli_io_cursor > 0) {
-                putchar_fn('\b');
-                cli_io_cursor--;
-            }
-        } else {
-            printf("\e[%dD", cli_io_cursor);
-            fflush(stdout);
-            cli_io_cursor = 0;
-        }
-    }
-}
-
-/**
- * Move cursor to end of line
- */
-static void cli_io_mvcrse(void) {
-    while (cli_io_cursor < cli_io_bytes) {
-        putchar_fn(cli_io_buf[cli_io_cursor]);
-        cli_io_cursor++;
     }
 }
 
@@ -369,6 +231,131 @@ static void cli_io_mvcrsew(void) {
 }
 
 /**
+ * Move cursor to beginnig of line
+ */
+static void cli_io_mvcrsh(void) {
+    if ((cli_io_cursor > 0) && (cli_io_bytes > 0)) {
+        if (cli_io_cursor < 4) {
+            while (cli_io_cursor > 0) {
+                putchar_fn('\b');
+                cli_io_cursor--;
+            }
+        } else {
+            printf("\e[%dD", cli_io_cursor);
+            fflush(stdout);
+            cli_io_cursor = 0;
+        }
+    }
+}
+
+/**
+ * Move cursor to end of line
+ */
+static void cli_io_mvcrse(void) {
+    while (cli_io_cursor < cli_io_bytes) {
+        putchar_fn(cli_io_buf[cli_io_cursor]);
+        cli_io_cursor++;
+    }
+}
+
+
+/**
+ * Delete char under cursor
+ */
+void cli_io_delchrc(void) {
+    if ((cli_io_bytes > 0) && (cli_io_cursor < cli_io_bytes)) {
+        cli_io_delchr();
+    }
+}
+
+/**
+ * Delete character before cursor
+ */
+static void cli_io_backspace(void) {
+    if ((cli_io_bytes > 0) && (cli_io_cursor > 0)) {
+        if (cli_io_cursor == cli_io_bytes) {
+            cli_io_cursor--;
+            cli_io_bytes--;
+            printf("\b\e[J");
+            fflush(stdout);
+        } else if (cli_io_cursor < cli_io_bytes) {
+            int n = cli_io_bytes - cli_io_cursor;
+            cli_io_cursor--;
+            cli_io_bytes--;
+            putchar_fn('\b');
+            cli_io_mvtxt(n);
+        }
+    }
+}
+
+/**
+ * Delete word after cursor
+ */
+static void cli_io_delworda(void) {
+    while ((cli_io_cursor < cli_io_bytes) && (cli_io_buf[cli_io_cursor] == ' ')) {
+        cli_io_delchr();
+    }
+
+    while ((cli_io_cursor < cli_io_bytes) && (cli_io_buf[cli_io_cursor] != ' ')) {
+        cli_io_delchr();
+    }
+}
+
+/**
+ * Delete word before cursor
+ */
+static void cli_io_delwordb(void) {
+    while ((cli_io_cursor > 0) && (cli_io_buf[cli_io_cursor - 1] == ' ')) {
+        cli_io_backspace();
+    }
+
+    while ((cli_io_cursor > 0) && (cli_io_buf[cli_io_cursor - 1] != ' ')) {
+        cli_io_backspace();
+    }
+}
+
+/**
+ * Clear all after cursor
+ */
+static void cli_io_clra(void) {
+    if ((cli_io_cursor > 0) && (cli_io_bytes > 0) &&
+        (cli_io_cursor < cli_io_bytes)) {
+        cli_io_cursor = 0;
+        cli_io_bytes = 0;
+        printf("\e[J");
+        fflush(stdout);
+    }
+}
+
+/**
+ * Clear all before cursor
+ */
+static void cli_io_clrb(void) {
+    if ((cli_io_cursor > 0) && (cli_io_bytes > 0)) {
+
+        printf("\r%s ", cli_io_prompt);
+        fflush(stdout);
+        if (cli_io_cursor < cli_io_bytes) {
+            for (int i = 0; i < cli_io_bytes - cli_io_cursor; i++) {
+                cli_io_buf[i] = cli_io_buf[i + cli_io_cursor];
+                putchar_fn(cli_io_buf[i]);
+            }
+            cli_io_bytes -= cli_io_cursor;
+            cli_io_cursor = 0;
+            printf("\e[J");
+            fflush(stdout);
+            cli_io_mvcrs(cli_io_bytes);
+        } else {
+            cli_io_cursor = 0;
+            cli_io_bytes = 0;
+            printf("\r%s \e[J", cli_io_prompt);
+            fflush(stdout);
+        }
+    }
+}
+
+
+/**
  * At the momen its just skip all input
  *
  * TODO: implemen kill of program execution.
@@ -380,6 +367,24 @@ static void cli_io_kill(void) {
     cli_io_bytes = 0;
 }
 
+/**
+ * Run command
+ */
+static inline void cli_io_ret(void) {
+    putchar_fn('\r');
+    putchar_fn('\n');
+
+    cli_io_buf[cli_io_bytes] = '\0';
+    cli_exec_cmd(cli_io_buf, cli_io_bytes);
+
+    cli_io_bytes = 0;
+    cli_io_cursor = 0;
+    printf("%s ", cli_io_prompt);
+    fflush(stdout);
+}
+
+
+#if (CLI_CMDCPLT == 1)
 /**
  * Complete command
  */
@@ -416,25 +421,27 @@ static void cli_io_cplt(void) {
         }
     }
 }
+#endif /* CLI_CMDCPLT == 1 */
 
+
+#if (CLI_HISTORY == 1)
 /**
- * Run command
+ * Next item in the command history
  */
-static inline void cli_io_ret(void) {
-    putchar_fn('\r');
-    putchar_fn('\n');
-
-    cli_io_buf[cli_io_bytes] = '\0';
-    cli_exec_cmd(cli_io_buf, cli_io_bytes);
-
-    cli_io_bytes = 0;
-    cli_io_cursor = 0;
-    printf("%s ", cli_io_prompt);
-    fflush(stdout);
+static void cli_io_hstnext(void) {
+    const char* ptr = cli_history_get_next();
+    cli_io_setcmd(ptr);
 }
 
+/**
+ * Previous item in the command history
+ */
+static void cli_io_hstprev(void) {
+    const char* ptr = cli_history_get_prev();
+    cli_io_setcmd(ptr);
+}
+#endif /* CLI_HISTORY == 1 */
 
-/* Input/outout functionality section */
 
 /**
  * Handle special characters.
@@ -442,6 +449,7 @@ static inline void cli_io_ret(void) {
  * This function handle received character codes from 0 to 0x1F
  *
  * @param c received character code
+ * @return 0 if character was handeled and input character value if not
  */
 static int cli_io_ctrl(int c) {
     int ret = 0;
@@ -474,9 +482,11 @@ static int cli_io_ctrl(int c) {
         cli_io_backspace();
         break;
 
+#if (CLI_CMDCPLT == 1)
     case CLI_CC_TAB:
         cli_io_cplt();
         return 0;
+#endif /* CLI_CMDCPLT == 1 */
 
     case CLI_CC_VT:
         cli_io_clra();
@@ -485,7 +495,7 @@ static int cli_io_ctrl(int c) {
     case CLI_CC_CR:
         cli_io_ret();
         break;
-
+#if (CLI_HISTORY == 1)
     case CLI_CC_SO:
         cli_io_hstnext();
         break;
@@ -493,6 +503,7 @@ static int cli_io_ctrl(int c) {
     case CLI_CC_DLE:
         cli_io_hstprev();
         break;
+#endif /* CLI_HISTORY == 1 */
 
     case CLI_CC_NAK:
         cli_io_clrb();
@@ -522,11 +533,14 @@ static int cli_io_ctrl(int c) {
  */
 static void cli_io_csi(void) {
     if (cli_io_csi_bytes > 0) {
+#if (CLI_HISTORY == 1)
         if (cli_io_csi_buf[0] == 'A') { /* Up */
             cli_io_hstnext();
         } else if (cli_io_csi_buf[0] == 'B') { /* Down */
             cli_io_hstprev();
-        } else if (cli_io_csi_buf[0] == 'C') { /* Right */
+        } else
+#endif /* CLI_HISTORY == 1 */
+        if (cli_io_csi_buf[0] == 'C') { /* Right */
             cli_io_mvcrsr();
         } else if (cli_io_csi_buf[0] == 'D') { /* Left */
             cli_io_mvcrsl();
@@ -651,8 +665,10 @@ static void cli_io(int c) {
 
 void cli_start(void) {
     const char* hello_msg = CLI_HELLO_MSG;
+#if (CLI_HISTORY == 1)
     cli_history_clear();
     cli_history_cmd_init();
+#endif /* CLI_HISTORY == 1 */
     cli_register_commands();
     cli_help_cmd_init();
 

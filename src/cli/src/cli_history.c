@@ -8,7 +8,8 @@
  */
 
 #include "cli_history.h"
-#include "cli.h"
+
+#if (CLI_HISTORY == 1)
 
 static int ch_cursor = 0;
 static char ch_buf[CLI_HISTORY_BUF_LEN];
@@ -174,3 +175,4 @@ void cli_history_cmd_init(void) {
     cli_regcmd(&cli_history_cmd);
 }
 
+#endif /* CLI_HISTORY == 1 */

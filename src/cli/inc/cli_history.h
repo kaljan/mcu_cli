@@ -10,6 +10,10 @@
 #ifndef CLI_HISTORY_H
 #define CLI_HISTORY_H
 
+#include "cli.h"
+
+#if (CLI_HISTORY == 1)
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -23,5 +27,6 @@ void cli_history_cmd_init(void);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-
+#endif /* CLI_HISTORY == 1 */
 #endif /* CLI_HISTORY_H */
+

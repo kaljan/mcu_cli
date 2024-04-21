@@ -8,7 +8,6 @@
  */
 #include "cli_config.h"
 #include "hal_uart.h"
-// #include <stdint.h>
 
 
 extern void cli_clcd_print_init(void);

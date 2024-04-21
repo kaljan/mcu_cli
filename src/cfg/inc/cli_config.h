@@ -1,17 +1,13 @@
 /**
- * @file    cli_opt.h
+ * @file    cli_config.h
  * @author  Mikalai Naurotski (kaljan@nothern.com)
  * @version 0.0.0
  * @date    2024-04-20
  *
  * @brief
  */
-#ifndef CLI_OPT_H
-#define CLI_OPT_H
-
-#ifdef CLI_OPT
-#include CLI_OPT
-#else
+#ifndef CLI_CONFIG_H
+#define CLI_CONFIG_H
 
 /* Command buffer size */
 #define CLI_BUF_SIZE                128
@@ -23,7 +19,7 @@
 #define CLI_ESC_BUF_SIZE            16
 
 /* History buffer size */
-#define CLI_HISTORY_BUF_LEN         1024
+#define CLI_HISTORY_BUF_LEN         512
 
 /* Enable command input history */
 #define CLI_HISTORY                 1
@@ -35,15 +31,23 @@
 #define CLI_HELLO_MSG               "\r\nCommand line interface for MCUs\r\n"
 
 /* Prompt text */
-#define CLI_PROMPT                  ">"
-
-/* Register all commands */
-#define cli_register_commands()
+#define CLI_PROMPT                  "\e[1;34mbluepill\e[37m#\e[0m"
 
 /* Getchar and putchar functions */
-#define putchar_fn(c)
-#define getchar_fn()
+#define putchar_fn(c)               __io_putchar(c)
+#define getchar_fn()                __io_getchar()
 
-#endif
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
-#endif /* CLI_OPT_H */
+/* Register all commands */
+void cli_register_commands(void);
+int __io_putchar(int ch);
+int __io_getchar(void);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* CLI_CONFIG_H */

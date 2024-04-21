@@ -7,7 +7,6 @@
  * @brief
  */
 
-#include "cli.h"
 #include "cli_exec.h"
 #include "cli_history.h"
 
@@ -47,6 +46,7 @@ static cli_node_t* cli_exec_get_cmd(cli_node_t* head, const char* cmd) {
     return head;
 }
 
+#if (CLI_CMDCPLT == 1)
 
 cli_node_t* cli_exec_cplt(const char* expr, int len, int*const num) {
     if ((expr != NULL)) {
@@ -79,6 +79,7 @@ cli_node_t* cli_exec_cplt(const char* expr, int len, int*const num) {
     }
     return NULL;
 }
+#endif /* CLI_CMDCPLT == 1 */
 
 void cli_exec_cmd(const char* cmd, int size) {
     if ((size > 0) && (cmd != NULL)) {
@@ -94,9 +95,12 @@ void cli_exec_cmd(const char* cmd, int size) {
             while (*cmd == ' ') {
                 cmd++;
             }
-        } else {
+        }
+#if (CLI_HISTORY == 1)
+        else {
             cli_history_add(cmd);
         }
+#endif /* CLI_HISTORY == 1 */
 
         while (*cmd != '\0') {
 

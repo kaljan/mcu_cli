@@ -107,8 +107,8 @@ C_SOURCES = \
 	$(HAL_SRC) \
 	$(CLI_SRC) \
 	$(APP_SRC) \
-	$(SRC_DIR)/cfg/cfg_stm32f1xx_gpio.c \
-	$(SRC_DIR)/cfg/cli_config.c \
+	$(SRC_DIR)/cfg/src/cfg_stm32f1xx_gpio.c \
+	$(SRC_DIR)/cfg/src/cli_config.c \
 	$(SRC_DIR)/main.c
 
 
@@ -118,7 +118,7 @@ C_SOURCES = \
 # C includes
 C_INCLUDES = \
 	-I$(SRC_DIR) \
-	-I$(SRC_DIR)/cfg \
+	-I$(SRC_DIR)/cfg/inc \
 	-I$(CLI_DIR)/inc \
 	-I$(CMSIS_DEV_STM32F1XX_DIR)/Include \
 	-I$(CMSIS_DIR)/Include \
