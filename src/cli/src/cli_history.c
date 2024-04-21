@@ -52,6 +52,9 @@ void cli_history_add(const char* cmd) {
 
         ch_tail_ptr = &ch_buf[ch_cursor];
         while (*cmd != 0) {
+            if (&ch_buf[ch_cursor] == ch_head_ptr) {
+                ptr = ch_head_ptr;
+            }
             ch_buf[ch_cursor++] = *cmd;
             cmd++;
             if (ptr != NULL) {
@@ -75,7 +78,7 @@ void cli_history_add(const char* cmd) {
                 }
                 ptr++;
             }
-            ch_head_ptr = ptr + 1;
+            ch_head_ptr = ptr;
         }
         ch_cursor++;
     }
@@ -140,19 +143,32 @@ const char* cli_history_get_prev(void) {
 }
 
 static int cli_history_cmd_main(int argc, char** argv) {
-    if ((NULL != ch_head_ptr) && (NULL != ch_tail_ptr)) {
+    if (argc > 1) {
+        argv++;
+        if (strcmp(*argv, "clear") == 0) {
+            cli_history_clear();
+        } else {
+            printf("Bad argument: \'%s\'\r\n", *argv);
+            return -1;
+        }
+    } else if ((NULL != ch_head_ptr) && (NULL != ch_tail_ptr)) {
         char* ptr = ch_head_ptr;
+        int index = 0;
         do {
-            printf("%s\r\n", ptr);
+            printf("%2d %s\r\n", index++, ptr);
             while (*ptr != 0) {
                 ptr++;
             }
 
             while (*ptr == 0) {
                 ptr++;
+                if (ptr >= ch_buf_end) {
+                    ptr = ch_buf_start;
+                }
             }
 
         } while (ptr != ch_tail_ptr);
+        printf("%2d %s\r\n", index++, ch_tail_ptr);
     }
     return 0;
 }

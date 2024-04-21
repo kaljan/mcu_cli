@@ -103,8 +103,6 @@ static cli_node_t* cli_io_cplt_curr = NULL;
 
 /* Private functions */
 
-/* Common functionality */
-
 /**
  * Move cursor back
  *
@@ -130,9 +128,8 @@ static void cli_io_mvcrs(int n) {
  */
 static void cli_io_mvtxt(int n) {
     for (int i = 0; i < n; i++) {
-        char c = cli_io_buf[i + cli_io_cursor + 1];
-        cli_io_buf[i + cli_io_cursor] = c;
-        putchar_fn((int)c);
+        cli_io_buf[i + cli_io_cursor] = cli_io_buf[i + cli_io_cursor + 1];
+        putchar_fn((int)cli_io_buf[i + cli_io_cursor]);
     }
 
     printf("\e[J");
@@ -169,8 +166,6 @@ static void cli_io_delchr(void) {
 }
 
 
-/* Shortcuts functionality section */
-
 /**
  * Move cursor right
  */
@@ -195,11 +190,7 @@ static void cli_io_mvcrsl(void) {
  * Move cursor to beginning of word
  */
 static void cli_io_mvcrsbw(void) {
-    if (cli_io_cursor < cli_io_bytes) {
-        putchar_fn(cli_io_buf[cli_io_cursor]);
-        cli_io_cursor++;
-    }
-
+    cli_io_mvcrsr();
     while ((cli_io_cursor < cli_io_bytes) && (cli_io_buf[cli_io_cursor] == ' ')) {
         putchar_fn(cli_io_buf[cli_io_cursor]);
         cli_io_cursor++;
@@ -215,10 +206,8 @@ static void cli_io_mvcrsbw(void) {
  * Move cursor to end of word
  */
 static void cli_io_mvcrsew(void) {
-    if (cli_io_cursor > 0) {
-        cli_io_cursor--;
-        putchar_fn('\b');
-    }
+    cli_io_mvcrsl();
+
     while ((cli_io_cursor > 0) && (cli_io_buf[cli_io_cursor] == ' ')) {
         cli_io_cursor--;
         putchar_fn('\b');
@@ -357,8 +346,6 @@ static void cli_io_clrb(void) {
 
 /**
  * At the momen its just skip all input
- *
- * TODO: implemen kill of program execution.
  */
 static void cli_io_kill(void) {
     printf("^C\r\n%s ", cli_io_prompt);
