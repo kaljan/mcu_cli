@@ -4,7 +4,7 @@
  * @version 0.0.0
  * @date    2024-04-20
  *
- * @brief
+ * @brief   Configurations and initializations for command line interface
  */
 #ifndef CLI_CONFIG_H
 #define CLI_CONFIG_H

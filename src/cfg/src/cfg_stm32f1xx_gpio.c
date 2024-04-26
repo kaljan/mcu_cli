@@ -4,7 +4,7 @@
  * @version 0.0.0
  * @date    2024-04-07
  *
- * @brief
+ * @brief   GPIO configs
  */
 #include "stm32f1xx_gpio.h"
 
@@ -30,6 +30,9 @@
 //     {GPIOA, 15},
 // };
 
+#if (HAL_CLCD_PWREN == HAL_ENABLED)
+static GPIO_Pin_t CLCD_PWR_EN_Pin = {.port = CLCD_PWREN_PORT, .pin = CLCD_PWREN_PIN,};
+#endif
 
 static GPIO_Pin_t MC6800_E_Pin = {.port = MC6800_E_PORT, .pin = MC6800_E_PIN,};
 static GPIO_Pin_t MC6800_RS_Pin = {.port = MC6800_RS_PORT, .pin = MC6800_RS_PIN,};
@@ -74,3 +77,11 @@ static hal_mc6800_t hal_mc6800_instance = {
 hal_mc6800_t* hal_mc6800_get_port(void) {
     return &hal_mc6800_instance;
 }
+
+#if (HAL_CLCD_PWREN == HAL_ENABLED)
+
+hal_object_t hal_clcd_pwren_get_pin(void) {
+    return &CLCD_PWR_EN_Pin;
+}
+#endif
+

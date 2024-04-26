@@ -4,12 +4,17 @@
  * @version 0.0.0
  * @date    2024-04-07
  *
- * @brief
+ * @brief   Confuiguration for MC6800 port
  */
 #ifndef CFG_STM32F1XX_MC6800_H
 #define CFG_STM32F1XX_MC6800_H
 
 #include "hal_config.h"
+
+#if (HAL_CLCD_PWREN == HAL_ENABLED)
+#define CLCD_PWREN_PORT                     GPIOA
+#define CLCD_PWREN_PIN                      15U
+#endif
 
 #define MC6800_E_PORT                       GPIOA
 #define MC6800_E_PIN                        9U

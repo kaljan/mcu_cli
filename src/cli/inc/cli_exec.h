@@ -4,7 +4,7 @@
  * @version 0.0.0
  * @date    2024-04-13
  *
- * @brief
+ * @brief   Command line interface run and command completion
  */
 
 #ifndef CLI_EXEC_H

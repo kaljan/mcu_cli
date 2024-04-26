@@ -86,19 +86,19 @@
 
 /* Private variables */
 
-static const char* cli_io_prompt = CLI_PROMPT;
+static const char* cli_io_prompt = CLI_PROMPT;  /* prompt string */
 
-static int cli_io_flags = 0;
+static int cli_io_flags = 0;                    /* I/O state flags */
 
-static int cli_io_cursor = 0;
-static int cli_io_bytes = 0;
-static char cli_io_buf[CLI_BUF_SIZE];
+static int cli_io_cursor = 0;                   /* cursor position */
+static int cli_io_bytes = 0;                    /* count of input characters in @ref{cli_io_buf} */
+static char cli_io_buf[CLI_BUF_SIZE];           /* command text buffers */
 
-static int cli_io_csi_bytes = 0;
-static char cli_io_csi_buf[CLI_ESC_BUF_SIZE];
+static int cli_io_csi_bytes = 0;                /* count of CSI escape sequence character */
+static char cli_io_csi_buf[CLI_ESC_BUF_SIZE];   /* CSI escape characters buffer */
 
-static int cli_io_cplt_items = 0;
-static cli_node_t* cli_io_cplt_curr = NULL;
+static int cli_io_cplt_items = 0;               /* items in command completion list */
+static cli_node_t* cli_io_cplt_curr = NULL;     /* command completion list */
 
 
 /* Private functions */

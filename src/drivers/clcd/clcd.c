@@ -8,7 +8,6 @@
  */
 
 #include "clcd.h"
-#include "clcd_config.h"
 #include "clcd_insructions.h"
 
 #include <stdio.h>
@@ -30,6 +29,25 @@ static uint8_t m_clcd_flags = 0;
 
 static void clcd_ru_utf8_convert(char* dst, uint32_t dst_size, const char* src, uint32_t src_size);
 
+#if (HAL_CLCD_PWREN == HAL_ENABLED)
+extern hal_object_t hal_clcd_pwren_get_pin(void);
+static hal_object_t pwren_pin = NULL;
+
+static void clcd_pwren_init(void) {
+    pwren_pin = hal_clcd_pwren_get_pin();
+    hal_gpio_pin_set_dir(pwren_pin, HAL_GPIO_DIR_OUT);
+    hal_gpio_pin_reset(pwren_pin);
+}
+
+void clcd_power_enable(void) {
+    hal_gpio_pin_set(pwren_pin);
+}
+
+void clcd_power_disable(void) {
+    hal_gpio_pin_reset(pwren_pin);
+}
+
+#endif
 
 /**
  * @brief
@@ -53,6 +71,12 @@ void clcd_init(void) {
     if ((m_clcd_flags & CLCD_INIT_FLAG) == CLCD_INIT_FLAG) {
         return;
     }
+
+#if (HAL_CLCD_PWREN == HAL_ENABLED)
+    clcd_pwren_init();
+    clcd_delay_us(CLCD_POWER_ON_DELAY_US);
+    clcd_power_enable();
+#endif
 
     m_clcd_flags = CLCD_INIT_FLAG | CLCD_DISPLAY_ON;
 

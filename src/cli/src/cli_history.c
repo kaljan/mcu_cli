@@ -4,7 +4,7 @@
  * @version 0.0.0
  * @date    2024-04-10
  *
- * @brief
+ * @brief   Command line history
  */
 
 #include "cli_history.h"

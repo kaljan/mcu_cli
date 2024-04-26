@@ -60,7 +60,7 @@
 #define CLCD_CLEAR_DELAY_US                         1600
 
 /** Power on delay */
-#define CLCD_POWER_ON_DELAY_US                      500000
+#define CLCD_POWER_ON_DELAY_US                      100000
 
 #define clcd_delay_us(delay)                        hal_sys_time_delay_us(delay)
 
@@ -68,6 +68,7 @@
 #if (CLDC_IF_TYPE == CLDC_IF_TYPE_6800)
 
 #include "hal_mc6800.h"
+#include "hal_gpio.h"
 
 #define CLCD_INSTRUCTION                            HAL_INSTRUCTION
 #define CLCD_DATA                                   HAL_DATA

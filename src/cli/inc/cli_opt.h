@@ -4,11 +4,13 @@
  * @version 0.0.0
  * @date    2024-04-20
  *
- * @brief
+ * @brief   Default CLI options and configurations
  */
 #ifndef CLI_OPT_H
 #define CLI_OPT_H
 
+/* Set this macro in makefile or global build
+   config if you need to use your own config */
 #ifdef CLI_OPT
 #include CLI_OPT
 #else

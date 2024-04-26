@@ -4,7 +4,7 @@
  * @version 0.0.0
  * @date    2024-04-16
  *
- * @brief
+ * @brief   Configurations for tools
  */
 #ifndef TOOLS_CONFIG_H
 #define TOOLS_CONFIG_H

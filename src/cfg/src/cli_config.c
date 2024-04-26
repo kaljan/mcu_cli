@@ -4,7 +4,7 @@
  * @version 0.0.0
  * @date    2024-04-20
  *
- * @brief
+ * @brief   Configurations and initializations for command line interface
  */
 #include "cli_config.h"
 #include "hal_uart.h"
@@ -25,6 +25,9 @@ static void* redirect_handle;
 
 void cli_register_commands(void) {
     uint32_t baudrate = 115200;
+    redirect_handle = hal_uart_get_handle(2);
+    hal_uart_open(redirect_handle, &baudrate);
+
     cli_echo_init();
     cli_info_init();
     cli_reset_init();
@@ -32,9 +35,6 @@ void cli_register_commands(void) {
     cli_gpio_dir_cmd_init();
     cli_gpio_set_cmd_init();
     cli_clcd_print_init();
-
-    redirect_handle = hal_uart_get_handle(2);
-    hal_uart_open(redirect_handle, &baudrate);
 }
 
 

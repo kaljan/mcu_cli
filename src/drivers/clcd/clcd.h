@@ -10,10 +10,16 @@
 #define CLCD_H
 
 #include <stdint.h>
+#include "clcd_config.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+
+#if (HAL_CLCD_PWREN == HAL_ENABLED)
+void clcd_power_enable(void);
+void clcd_power_disable(void);
+#endif
 
 void clcd_init(void);
 void clcd_wait_busy(void);

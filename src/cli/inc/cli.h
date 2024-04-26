@@ -4,7 +4,7 @@
  * @version 0.0.0
  * @date    2024-03-23
  *
- * @brief
+ * @brief   Command line interface
  */
 
 #ifndef CLI_H
