@@ -218,47 +218,39 @@ static void cli_help_cmd_print_cmd_name(const char* text, int max) {
  *
  * @return exec status
  */
-static int cli_help_cmd_main(int argc, char** argv) {
+CLI_COMMAND_MAIN(help)(int argc, char** argv) {
     if (argc < 2) {
         printf("\r\n");
 
         cli_node_t* ptr = cli_exec_head;
         while (ptr != NULL) {
             cli_help_cmd_print_cmd_name(ptr->c_name, 16);
-            printf("%s\r\n", ptr->brief);
+            printf("%s\r\n", ptr->c_brief);
             ptr = ptr->next;
         }
         printf("\r\n");
     } else {
         cli_node_t* item = cli_exec_get_cmd(cli_exec_head, *(argv+1));
-        if ((NULL != item) && (NULL != item->help_fn)) {
-            item->help_fn();
+        if (item != NULL) {
+            if (item->c_help != NULL) {
+                printf("\r\n%s\r\n\r\n", item->c_help);
+            } else {
+                printf("\r\n%s\r\n\r\n", item->c_brief);
+            }
         }
     }
     return 0;
 }
 
-/**
- * Help function for 'help' command
- */
-static void cli_help_cmd_help(void) {
-    printf(
-        "\r\nPrint help info.\r\n"
-        "USAGE: help [<command_name>]\r\n"
-        );
-}
-
-/** 'help' command instance*/
-static cli_node_t cli_help_cmd = {
-    .c_name = "help",
-    .brief = "Print help info",
-    .main_fn = cli_help_cmd_main,
-    .help_fn = cli_help_cmd_help,
-};
+CLI_COMMAND(help,
+    "Print help info",
+    "Print help info.\r\n" \
+    "USAGE: help [<command_name>]"
+)
 
 /**
  * Initialize fommand 'help'
  */
 void cli_help_cmd_init(void) {
-    cli_regcmd(&cli_help_cmd);
+    CLI_REGISTER_COMMAND(help);
 }

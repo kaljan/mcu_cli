@@ -10,12 +10,9 @@
 #include "hal_uart.h"
 
 
-extern void cli_clcd_print_init(void);
+extern void cli_clcd_init(void);
 extern void cli_echo_init(void);
-extern void cli_gpio_info_cmd_init(void);
-extern void cli_gpio_dir_cmd_init(void);
-extern void cli_gpio_set_cmd_init(void);
-extern void cli_gpio_get_cmd_init(void);
+extern void cli_gpio_init(void);
 extern void cli_info_init(void);
 extern void cli_reset_init(void);
 
@@ -31,10 +28,8 @@ void cli_register_commands(void) {
     cli_echo_init();
     cli_info_init();
     cli_reset_init();
-    cli_gpio_info_cmd_init();
-    cli_gpio_dir_cmd_init();
-    cli_gpio_set_cmd_init();
-    cli_clcd_print_init();
+    cli_gpio_init();
+    cli_clcd_init();
 }
 
 

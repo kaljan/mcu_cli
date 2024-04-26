@@ -12,26 +12,17 @@
 #include "hal_tim.h"
 
 
-static int cli_reset_main(int argc, char** argv) {
+CLI_COMMAND_MAIN(reset)(int argc, char** argv) {
     printf("\r\nSoftware reset\r\n\r\n");
     hal_sys_time_delay_us(100000);
     NVIC_SystemReset();
     return 0;
 }
 
-static void cli_reset_cmd_help(void) {
-    printf(
-        "\r\nSoftware reset\r\n\r\n"
-        );
-}
-
-
-static cli_node_t cli_reset_cmd = {
-    .c_name = "reset",
-    .brief = "Software reset",
-    .main_fn = cli_reset_main,
-    .help_fn = cli_reset_cmd_help,
-};
+CLI_COMMAND(reset,
+    "Software reset",
+    NULL
+)
 
 void cli_reset_init(void) {
     cli_regcmd(&cli_reset_cmd);

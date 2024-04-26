@@ -11,43 +11,73 @@
 #include "clcd.h"
 
 
-static int cli_clcd_print_main(int argc, char** argv) {
-    if (argc < 3) {
+CLI_COMMAND_MAIN(clcd_print)(int argc, char** argv) {
+    if (argc < 2) {
         printf("USAGE: clcd_print <cursor position> <text>\r\n");
         return -1;
     }
+    char clcd_buf[33];
+    int cursor = 0;
     argv++;
-    int cursor_position = atoi(*argv);
-    char clcd_text[33];
-    int index = 0;
 
-    if (cursor_position < 0 || cursor_position >= 32) {
-        printf("Wrong cursor position: %d", cursor_position);
+    while (*argv != NULL && cursor < 32) {
+        int ret = snprintf(&clcd_buf[cursor], 33 - cursor, "%s ", *argv);
+        argv++;
+        if (ret > 0) {
+            cursor += ret;
+        }
+    }
+
+    clcd_over_print(0, 32, clcd_buf);
+
+    return 0;
+}
+
+CLI_COMMAND(clcd_print,
+    "Print text to LCD",
+    NULL
+)
+
+#if (HAL_CLCD_PWREN == HAL_ENABLED)
+CLI_COMMAND_MAIN(clcd_power)(int argc, char** argv) {
+    static int power_enbled = 1;
+    if (argc < 2) {
+        printf("USAGE: %s <on/off>", *argv);
         return -1;
     }
 
     argv++;
-
-    while (*argv != NULL) {
-        int len = strlen(*argv);
-        if (len > 32) {
+    if (strcmp("on", *argv) == 0) {
+        if (power_enbled == 0) {
+            power_enbled = 1;
+            clcd_init();
+        } else {
+            printf("LCD already powered on\r\n");
         }
+    } else if (strcmp("off", *argv) == 0) {
+        if (power_enbled == 1) {
+            power_enbled = 0;
+            clcd_power_disable();
+        } else {
+            printf("LCD already powered off\r\n");
+        }
+    } else {
+        printf("bad argumen\r\n");
+        return -1;
     }
 
     return 0;
 }
 
-static void cli_clcd_print_help(void) {
-    printf("\r\nPrint text to LCD\r\n\r\n");
-}
+CLI_COMMAND(clcd_power,
+    "Print text to LCD",
+    NULL
+)
+#endif
 
-static cli_node_t cli_clcd_print_cmd = {
-    .c_name = "clcd_print",
-    .brief = "Print text to LCD",
-    .main_fn = cli_clcd_print_main,
-    .help_fn = cli_clcd_print_help,
-};
-
-void cli_clcd_print_init(void) {
-    cli_regcmd(&cli_clcd_print_cmd);
+void cli_clcd_init(void) {
+    CLI_REGISTER_COMMAND(clcd_print);
+#if (HAL_CLCD_PWREN == HAL_ENABLED)
+    CLI_REGISTER_COMMAND(clcd_power);
+#endif
 }

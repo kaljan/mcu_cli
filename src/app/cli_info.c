@@ -12,7 +12,7 @@
 #include "stm32f1xx_rcc.h"
 
 
-static int cli_info_main(int argc, char** argv) {
+CLI_COMMAND_MAIN(info)(int argc, char** argv) {
     RCC_ClockFreq_t ckcfg;
     RCC_ClockGetFreq(&ckcfg);
     printf(
@@ -51,25 +51,17 @@ static int cli_info_main(int argc, char** argv) {
     return 0;
 }
 
-static void cli_info_cmd_help(void) {
-    printf(
-        "\r\nPrint device info:\r\n\r\n"
-        "- MCU UID\r\n"
-        "- FLash size\r\n"
-        "- Firmware version\r\n"
-        "- Firmware release date\r\n"
-        "- Hardware version\r\n"
-        "- Hardware release date\r\n"
-        );
-}
-
-static cli_node_t cli_info_cmd = {
-    .c_name = "info",
-    .brief = "print device info",
-    .main_fn = cli_info_main,
-    .help_fn = cli_info_cmd_help,
-};
+CLI_COMMAND(info,
+    "print device info",
+    "Print device info:\r\n\r\n"
+    "- MCU UID\r\n"
+    "- FLash size\r\n"
+    "- Firmware version\r\n"
+    "- Firmware release date\r\n"
+    "- Hardware version\r\n"
+    "- Hardware release date"
+)
 
 void cli_info_init(void) {
-    cli_regcmd(&cli_info_cmd);
+    CLI_REGISTER_COMMAND(info)
 }

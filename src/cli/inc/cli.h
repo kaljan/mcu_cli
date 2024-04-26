@@ -34,13 +34,13 @@ typedef struct cli_node {
     const char* c_name;
 
     /* Brief description */
-    const char* brief;
+    const char* c_brief;
+
+    /* Help text */
+    const char* c_help;
 
     /* Poniter to main command function */
     int (*main_fn)(int, char**);
-
-    /* Pointer to print help function */
-    void (*help_fn)(void);
 
     /* Next item in single linked list  */
     struct cli_node* next;
@@ -51,6 +51,19 @@ typedef struct cli_node {
 
 /* IO functions */
 
+#define CLI_COMMAND_MAIN(name) \
+static int cli_command_##name##_main
+
+#define CLI_COMMAND(name, brief, help) \
+static cli_node_t cli_##name##_cmd = { \
+    .c_name = #name, \
+    .c_brief = brief, \
+    .c_help = help, \
+    .main_fn = cli_command_##name##_main, \
+};
+
+#define CLI_REGISTER_COMMAND(name) \
+    cli_regcmd(&cli_##name##_cmd);
 
 #ifdef __cplusplus
 extern "C" {

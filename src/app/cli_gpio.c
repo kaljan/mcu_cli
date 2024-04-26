@@ -47,7 +47,7 @@ static cli_gpio_pin_t gpio_a_pin_list[16] = {
     {12, 33, DO_NOT_USE,     "USB_DP"},
     {13, 34, DO_NOT_USE,     "SWDIO"},
     {14, 37, DO_NOT_USE,     "SWCLK"},
-    {15, 38, IN_EN | OUT_EN, "unused"},
+    {15, 38, DO_NOT_USE,     "LCD_PE"},
 };
 
 
@@ -324,11 +324,7 @@ static void cli_gpio_port_print_info(char p) {
 }
 
 
-static void cli_gpio_info_cmd_help(void) {
-    printf("\r\nPrint GPIO info\r\n\r\n");
-}
-
-static int cli_gpio_info_cmd_main(int argc, char** argv) {
+CLI_COMMAND_MAIN(gpio_info)(int argc, char** argv) {
     if (argc > 1) {
         argv++;
         char port = **argv;
@@ -350,32 +346,9 @@ static int cli_gpio_info_cmd_main(int argc, char** argv) {
     return 0;
 }
 
-static cli_node_t cli_gpio_info_cmd = {
-    .c_name = "gpio_info",
-    .brief = "Print GPIO info",
-    .main_fn = cli_gpio_info_cmd_main,
-    .help_fn = cli_gpio_info_cmd_help,
-};
-
-void cli_gpio_info_cmd_init(void) {
-    cli_regcmd(&cli_gpio_info_cmd);
-}
+CLI_COMMAND(gpio_info, "Print GPIO info", NULL)
 
 /* GPIO Direction */
-
-static void cli_gpio_dir_cmd_help(void) {
-    printf(
-        "\r\n USAGE: gpio_dir <port> <pin> [<in/out> [<0/1>]] \r\n\r\n"
-        " If after pin number is no more argument this command\r\n"
-        " will print current direction. \r\n\r\n"
-        " If you want to set initial value on output, you can set\r\n"
-        " this value after direction\r\n\r\n"
-        " <port> can be upper or lower case letter of port.\r\n"
-        " <in> can be '1', 'I' or 'i'\r\n"
-        " <out> can be '0', 'O' or 'o'"
-        "\r\n"
-    );
-}
 
 const char* cli_gpio_pin_dir_str(int dir) {
     if (dir == HAL_GPIO_DIR_OUT) {
@@ -386,7 +359,7 @@ const char* cli_gpio_pin_dir_str(int dir) {
     return "UNKNOWN";
 }
 
-static int cli_gpio_dir_cmd_main(int argc, char** argv) {
+CLI_COMMAND_MAIN(gpio_dir)(int argc, char** argv) {
     if (argc < 3) {
         printf("USAGE: gpio_dir <port> <pin> [<in/out> <0/1>]");
         return -1;
@@ -443,26 +416,20 @@ static int cli_gpio_dir_cmd_main(int argc, char** argv) {
     return 0;
 }
 
-static cli_node_t cli_gpio_dir_cmd = {
-    .c_name = "gpio_dir",
-    .brief = "GPIO get or set gpio direction",
-    .main_fn = cli_gpio_dir_cmd_main,
-    .help_fn = cli_gpio_dir_cmd_help,
-};
-
-void cli_gpio_dir_cmd_init(void) {
-    cli_regcmd(&cli_gpio_dir_cmd);
-}
-
+CLI_COMMAND(gpio_dir,
+    "GPIO get or set gpio direction",
+    " USAGE: gpio_dir <port> <pin> [<in/out> [<0/1>]] \r\n\r\n"
+    " If after pin number is no more argument this command\r\n"
+    " will print current direction. \r\n\r\n"
+    " If you want to set initial value on output, you can set\r\n"
+    " this value after direction\r\n\r\n"
+    " <port> can be upper or lower case letter of port.\r\n"
+    " <in> can be '1', 'I' or 'i'\r\n"
+    " <out> can be '0', 'O' or 'o'"
+)
 
 /* GPIO Set output value */
-static void cli_gpio_set_cmd_help(void) {
-    printf(
-        "\r\nUSAGE: gpio_set <port> <pin> <value>\r\n\r\n"
-        );
-}
-
-static int cli_gpio_set_cmd_main(int argc, char** argv) {
+CLI_COMMAND_MAIN(gpio_set)(int argc, char** argv) {
     if (argc < 4) {
         printf("USAGE: gpio_set <port> <pin> <value>\r\n");
         return -1;
@@ -497,34 +464,20 @@ static int cli_gpio_set_cmd_main(int argc, char** argv) {
     return 0;
 }
 
-static cli_node_t cli_gpio_set_cmd = {
-    .c_name = "gpio_set",
-    .brief = "Set GPIO output value",
-    .main_fn = cli_gpio_set_cmd_main,
-    .help_fn = cli_gpio_set_cmd_help,
-};
-
-void cli_gpio_set_cmd_init(void) {
-    cli_regcmd(&cli_gpio_set_cmd);
-}
+CLI_COMMAND(gpio_set, "Set GPIO output value", NULL)
 
 /* GPIO Get input value */
 
-static void cli_gpio_get_cmd_help(void) {
-    printf("\r\nPrint GPIO info\r\n\r\n");
-}
 
-static int cli_gpio_get_cmd_main(int argc, char** argv) {
+CLI_COMMAND_MAIN(gpio_get)(int argc, char** argv) {
     return 0;
 }
 
-static cli_node_t cli_gpio_get_cmd = {
-    .c_name = "gpio_dir",
-    .brief = "Print GPIO info",
-    .main_fn = cli_gpio_get_cmd_main,
-    .help_fn = cli_gpio_get_cmd_help,
-};
+CLI_COMMAND(gpio_get, "Print GPIO info", NULL)
 
-void cli_gpio_get_cmd_init(void) {
-    cli_regcmd(&cli_gpio_get_cmd);
+void cli_gpio_init(void) {
+    CLI_REGISTER_COMMAND(gpio_info)
+    CLI_REGISTER_COMMAND(gpio_dir)
+    CLI_REGISTER_COMMAND(gpio_set)
+    CLI_REGISTER_COMMAND(gpio_get)
 }

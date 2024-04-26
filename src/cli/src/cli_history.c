@@ -142,7 +142,7 @@ const char* cli_history_get_prev(void) {
     return NULL;
 }
 
-static int cli_history_cmd_main(int argc, char** argv) {
+CLI_COMMAND_MAIN(history)(int argc, char** argv) {
     if (argc > 1) {
         argv++;
         if (strcmp(*argv, "clear") == 0) {
@@ -173,22 +173,14 @@ static int cli_history_cmd_main(int argc, char** argv) {
     return 0;
 }
 
-static void cli_history_cmd_help(void) {
-    printf(
-        "\r\nPrint or clear command history.\r\n"
-        );
-}
-
-static cli_node_t cli_history_cmd = {
-    .c_name = "history",
-    .brief = "print or clear command history",
-    .main_fn = cli_history_cmd_main,
-    .help_fn = cli_history_cmd_help,
-};
+CLI_COMMAND(history,
+    "print or clear command history",
+    NULL
+)
 
 void cli_history_cmd_init(void) {
     cli_history_clear();
-    cli_regcmd(&cli_history_cmd);
+    CLI_REGISTER_COMMAND(history)
 }
 
 #endif /* CLI_HISTORY == 1 */

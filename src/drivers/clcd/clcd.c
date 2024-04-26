@@ -45,6 +45,7 @@ void clcd_power_enable(void) {
 
 void clcd_power_disable(void) {
     hal_gpio_pin_reset(pwren_pin);
+    m_clcd_flags = 0;
 }
 
 #endif

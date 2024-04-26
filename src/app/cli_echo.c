@@ -11,7 +11,7 @@
 #include "clcd.h"
 
 
-static int cli_echo_main(int argc, char** argv) {
+CLI_COMMAND_MAIN(echo)(int argc, char** argv) {
     argv++;
     while (*argv != NULL) {
         printf("%s", *argv);
@@ -28,19 +28,13 @@ static int cli_echo_main(int argc, char** argv) {
     return 0;
 }
 
-static void cli_echo_help(void) {
-    printf("\r\nPrint text to terminal\r\n\r\n");
-}
-
-static cli_node_t cli_echo_cmd = {
-    .c_name = "echo",
-    .brief = "Print text to terminal",
-    .main_fn = cli_echo_main,
-    .help_fn = cli_echo_help,
-};
+CLI_COMMAND(echo,
+    "Print text to terminal",
+    NULL
+)
 
 void cli_echo_init(void) {
-    cli_regcmd(&cli_echo_cmd);
+    CLI_REGISTER_COMMAND(echo)
 }
 
 
