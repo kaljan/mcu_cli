@@ -12,7 +12,7 @@
 
 
 static int cli_cmd_argc = 0;              /* count of arguments */
-static char* cli_cmd_argv[CLI_ARGV_SIZE]; /* array of argument pointers */
+static char* cli_cmd_argv[CLI_ARGV_SIZE + 1]; /* array of argument pointers */
 static char cli_cmd_buf[CLI_BUF_SIZE];    /* buffer for command name and its arguments */
 
 static cli_node_t* cli_exec_head = NULL;  /* pointer to head of command list */
@@ -115,6 +115,7 @@ void cli_exec_cmd(const char* cmd, int size) {
     if ((size > 0) && (cmd != NULL)) {
         int flags = 0;
         int ret = 0;
+        char* arg_ptr = NULL;
         char* dst_ptr = cli_cmd_buf;
         cli_cmd_argc = 0;
         flags = 0x02;
@@ -133,32 +134,60 @@ void cli_exec_cmd(const char* cmd, int size) {
 #endif /* CLI_HISTORY == 1 */
 
         while (*cmd != '\0') {
-
-            if (*cmd == ' ') {
-                if ((flags & 0x01) == 0x01) {
-                    flags &= ~0x01;
-                    *dst_ptr = ' ';
+            if (*cmd == '\\') {
+                // cmd++;
+                if ((flags & 0x04) == 0x04) {
+                    if (*(cmd + 1) == '\"') {
+                        cmd++;
+                    }
                 } else {
-                    flags |= 0x02;
-                    *dst_ptr = '\0';
-                }
-            } else {
-                *dst_ptr = *cmd;
-
-                if ((flags & 0x02) == 0x02) {
-                    flags &= ~0x02;
-                    cli_cmd_argv[cli_cmd_argc] = dst_ptr;
-                    cli_cmd_argc++;
-                    if (cli_cmd_argc < CLI_ARGV_SIZE - 1) {
-                        cli_cmd_argv[cli_cmd_argc + 1] = NULL;
+                    if (((flags & 0x01) == 0x01)) {
+                        flags &= ~0x01;
                     } else {
-                        break;
+                        flags |= 0x01;
+                        cmd++;
+                        continue;
                     }
                 }
-
-                if (*cmd == '\\') {
-                    flags |= 0x01;
+            } else if (*cmd == '\"') {
+                if ((flags & 0x01) == 0x01) {
+                    flags &= ~0x01;
+                } else {
+                    if ((flags & 0x04) == 0x04) {
+                        flags &= ~0x04;
+                    } else if ((flags & 0x04) != 0x04) {
+                        flags |= 0x04;
+                    }
+                    cmd++;
+                    continue;
                 }
+            } else if (*cmd == ' ') {
+                if ((flags & 0x01) == 0x01) {
+                    flags &= ~0x01;
+                } else if ((flags & 0x04) != 0x04) {
+                    if ((flags & 0x02) != 0x02) {
+                        flags |= 0x02;
+                        *dst_ptr = '\0';
+                        dst_ptr++;
+                    }
+                    cmd++;
+                    continue;
+                }
+            }
+
+            *dst_ptr = *cmd;
+
+           if ((flags & 0x02) == 0x02) {
+                flags &= ~0x02;
+                if (cli_cmd_argc < CLI_ARGV_SIZE) {
+                    cli_cmd_argv[cli_cmd_argc++] = dst_ptr;
+                    cli_cmd_argv[cli_cmd_argc] = NULL;
+                }
+                // cli_cmd_argc++;
+                // if (cli_cmd_argc < CLI_ARGV_SIZE - 1) {
+                // } else {
+                //     break;
+                // }
             }
             dst_ptr++;
             cmd++;
