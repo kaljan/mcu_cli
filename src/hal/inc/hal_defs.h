@@ -68,5 +68,9 @@
 
 #define HAL_OBJECT(type, name, arg) type* name = (type*)(arg)
 
+#define HAL_U16_LOW_BYTE(u16_val)   (0x00FF & (u16_val))
+#define HAL_U16_HIGH_BYTE(u16_val)   ((0xFF00 & (u16_val)) >> 8)
+
+#define HAL_ALIGN(a)    __attribute__ ((aligned (a)))
 
 #endif /* HAL_DEFS_H */
