@@ -4,7 +4,7 @@
  * @version 0.0.0
  * @date    2024-04-02
  *
- * @brief
+ * @brief   GPIO command line interface
  */
 
 #include "stm32f1xx_gpio.h"
@@ -12,9 +12,9 @@
 #include "cli.h"
 #include "hal_tim.h"
 
-#define DO_NOT_USE      0   /* Do not use */
-#define IN_EN      0x01 /* Input configuration enabled */
-#define OUT_EN     0x02 /* Output configuration enabled */
+#define DO_NOT_USE  0    /* Do not use */
+#define IN_EN       0x01 /* Input configuration enabled */
+#define OUT_EN      0x02 /* Output configuration enabled */
 
 static const char* cli_gpio_undefined = "undefined";
 
@@ -348,6 +348,7 @@ CLI_COMMAND_MAIN(gpio_info)(int argc, char** argv) {
 
 CLI_COMMAND(gpio_info, "Print GPIO info", NULL)
 
+
 /* GPIO Direction */
 
 const char* cli_gpio_pin_dir_str(int dir) {
@@ -428,7 +429,9 @@ CLI_COMMAND(gpio_dir,
     " <out> can be '0', 'O' or 'o'"
 )
 
+
 /* GPIO Set output value */
+
 CLI_COMMAND_MAIN(gpio_set)(int argc, char** argv) {
     if (argc < 4) {
         printf("USAGE: gpio_set <port> <pin> <value>\r\n");
@@ -450,10 +453,10 @@ CLI_COMMAND_MAIN(gpio_set)(int argc, char** argv) {
     }
 
     if ((v == 'h') || (v == 'H') || (v == '1')) {
-        printf("set P%c%d to HIGH\r\n");
+        printf("set P%c%d to HIGH\r\n", toupper(p), n);
         val = 1;
     } else if ((v == 'l') || (v == 'L') || (v == '0')) {
-        printf("set P%c%d to LOW\r\n");
+        printf("set P%c%d to LOW\r\n", toupper(p), n);
         val = 0;
     } else {
         printf("Bad value argument: \'%c\'\r\n", v);
@@ -466,14 +469,35 @@ CLI_COMMAND_MAIN(gpio_set)(int argc, char** argv) {
 
 CLI_COMMAND(gpio_set, "Set GPIO output value", NULL)
 
-/* GPIO Get input value */
 
+/* GPIO Get value */
 
 CLI_COMMAND_MAIN(gpio_get)(int argc, char** argv) {
+    if (argc < 3) {
+        printf("USAGE: gpio_set <port> <pin> <value>\r\n");
+        return -1;
+    }
+
+    char p = *(*(argv + 1));
+    int n = atoi(*(argv + 2));
+    GPIO_Pin_t pin;
+    cli_gpio_pin_t* pin_dsc_ptr = cli_gpio_pin_get(&pin, p, n);
+    int dir = hal_gpio_pin_get_dir(&pin);
+    int val = -1;
+
+    if (dir == HAL_GPIO_DIR_IN) {
+        val = hal_gpio_pin_get_in_value(&pin);
+        printf("P%c%d input value: %s \r\n", toupper(p), n, (val == 0) ? "LOW" : "HIGH");
+    } else {
+        val = hal_gpio_pin_get_out_value(&pin);
+        printf("P%c%d out value: %s \r\n", toupper(p), n, (val == 0) ? "LOW" : "HIGH");
+    }
+
     return 0;
 }
 
-CLI_COMMAND(gpio_get, "Print GPIO info", NULL)
+CLI_COMMAND(gpio_get, "Print GPIO state", NULL)
+
 
 /* GPIO pulse command*/
 
@@ -493,14 +517,14 @@ CLI_COMMAND_MAIN(gpio_pulse)(int argc, char** argv) {
 
     if (dir != HAL_GPIO_DIR_OUT) {
         const char* dir_str = cli_gpio_pin_dir_str(dir);
-        printf("P%c%d is not set as out\r\n");
+        printf("P%c%d is not set as out\r\n", toupper(p), n);
         return -1;
     } else if (t < 0) {
         printf("Bad value argument: \'%d\'\r\n", t);
         return -1;
     }
 
-    printf("pulse on %c %d. pulse len: %d ms\r\n", p, n, t);
+    printf("pulse on %c %d. pulse len: %d ms\r\n", toupper(p), n, t);
     hal_gpio_pin_toggle(&pin);
     hal_sys_time_delay_ms(t);
     hal_gpio_pin_toggle(&pin);

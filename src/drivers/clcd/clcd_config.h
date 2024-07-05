@@ -51,16 +51,16 @@
 #define CLDC_IF_TYPE                                CLDC_IF_TYPE_6800
 
 /** Delay after command execution */
-#define CLCD_CMD_DELAY_US                           50
+#define CLCD_CMD_DELAY_US                           100
 
 /** Delay after */
-#define CLCD_CMD_INIT_DELAY                         4200
+#define CLCD_CMD_INIT_DELAY                         5000
 
 /** Delay after clear instrucion */
-#define CLCD_CLEAR_DELAY_US                         1600
+#define CLCD_CLEAR_DELAY_US                         2000
 
 /** Power on delay */
-#define CLCD_POWER_ON_DELAY_US                      100000
+#define CLCD_POWER_ON_DELAY_US                      200000
 
 #define clcd_delay_us(delay)                        hal_sys_time_delay_us(delay)
 
@@ -74,6 +74,8 @@
 #define CLCD_DATA                                   HAL_DATA
 
 #define clcd_port_init()                            hal_mc6800_init()
+
+#define clcd_port_reset()                           hal_mc6800_reset()
 
 #if (HAL_MC6800_DATA_WIDTH == HAL_MC6800_DATA4)
 #define clcd_port_half_byte_write(DI, DATA)         hal_mc6800_4bit_write(DI, DATA)

@@ -4,12 +4,12 @@
  * @version 0.0.0
  * @date    2024-04-02
  *
- * @brief
+ * @brief   Character display command line interface
  */
 
 #include "cli.h"
 #include "clcd.h"
-
+#include "hal_tim.h"
 
 CLI_COMMAND_MAIN(clcd_print)(int argc, char** argv) {
     if (argc < 2) {
@@ -19,6 +19,8 @@ CLI_COMMAND_MAIN(clcd_print)(int argc, char** argv) {
     char clcd_buf[33];
     int cursor = 0;
     argv++;
+
+    printf("print text: %s\r\n", *argv);
 
     while (*argv != NULL && cursor < 32) {
         int ret = snprintf(&clcd_buf[cursor], 33 - cursor, "%s ", *argv);
@@ -50,7 +52,10 @@ CLI_COMMAND_MAIN(clcd_power)(int argc, char** argv) {
     if (strcmp("on", *argv) == 0) {
         if (power_enbled == 0) {
             power_enbled = 1;
+            clcd_power_enable();
             clcd_init();
+            hal_sys_time_delay_ms(500);
+            clcd_print(0, "LCD POWERED");
         } else {
             printf("LCD already powered on\r\n");
         }

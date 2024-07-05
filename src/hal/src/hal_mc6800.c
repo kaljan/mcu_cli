@@ -80,6 +80,18 @@ void hal_mc6800_init(void) {
     }
 }
 
+void hal_mc6800_reset(void) {
+    hal_gpio_pin_reset(hal_mc6800_ptr->e);
+    hal_gpio_pin_reset(hal_mc6800_ptr->rs);
+#if (HAL_MC6800_READ == HAL_ENABLED)
+        hal_gpio_pin_reset(hal_mc6800_ptr->rw);
+#endif
+
+    for (uint8_t i = 0; i < HAL_MC6800_DATA_WIDTH; i++) {
+        hal_gpio_pin_reset(hal_mc6800_ptr->d[i]);
+    }
+}
+
 #if (HAL_MC6800_DATA_WIDTH == HAL_MC6800_DATA4)
 void hal_mc6800_4bit_write(uint8_t di, uint8_t d) {
     if (NULL != hal_mc6800_ptr) {

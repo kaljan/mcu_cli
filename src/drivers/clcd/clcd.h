@@ -17,6 +17,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 #if (HAL_CLCD_PWREN == HAL_ENABLED)
+void clcd_pwren_init(void);
 void clcd_power_enable(void);
 void clcd_power_disable(void);
 #endif

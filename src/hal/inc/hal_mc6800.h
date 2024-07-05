@@ -25,6 +25,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 void hal_mc6800_init(void);
+void hal_mc6800_reset(void);
 
 #if (HAL_MC6800_DATA_WIDTH == HAL_MC6800_DATA4)
 void hal_mc6800_4bit_write(uint8_t di, uint8_t d);

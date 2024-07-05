@@ -24,6 +24,7 @@
 #define CLCD_DISPLAY_ON         0x02
 #define CLCD_CURSOR_ON          0x04
 #define CLCD_BLINK_ON           0x08
+#define CLCD_PWR_EN_INIT        0x10
 
 static uint8_t m_clcd_flags = 0;
 
@@ -33,7 +34,7 @@ static void clcd_ru_utf8_convert(char* dst, uint32_t dst_size, const char* src, 
 extern hal_object_t hal_clcd_pwren_get_pin(void);
 static hal_object_t pwren_pin = NULL;
 
-static void clcd_pwren_init(void) {
+void clcd_pwren_init(void) {
     pwren_pin = hal_clcd_pwren_get_pin();
     hal_gpio_pin_set_dir(pwren_pin, HAL_GPIO_DIR_OUT);
     hal_gpio_pin_reset(pwren_pin);
@@ -44,6 +45,11 @@ void clcd_power_enable(void) {
 }
 
 void clcd_power_disable(void) {
+    // clcd_port_write(0, 0);
+    // clcd_port_write(CLCD_INSTRUCTION, CLCD_ON_OFF_CTL);
+    // clcd_delay_us(CLCD_CMD_DELAY_US);
+
+    clcd_port_reset();
     hal_gpio_pin_reset(pwren_pin);
     m_clcd_flags = 0;
 }
@@ -73,10 +79,13 @@ void clcd_init(void) {
         return;
     }
 
-#if (HAL_CLCD_PWREN == HAL_ENABLED)
-    clcd_pwren_init();
-    clcd_delay_us(CLCD_POWER_ON_DELAY_US);
-    clcd_power_enable();
+#if 0 //(HAL_CLCD_PWREN == HAL_ENABLED)
+    if ((m_clcd_flags & CLCD_PWR_EN_INIT) != CLCD_PWR_EN_INIT) {
+        m_clcd_flags |= CLCD_PWR_EN_INIT;
+        clcd_pwren_init();
+        clcd_delay_us(CLCD_POWER_ON_DELAY_US);
+        clcd_power_enable();
+    }
 #endif
 
     m_clcd_flags = CLCD_INIT_FLAG | CLCD_DISPLAY_ON;

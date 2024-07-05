@@ -117,10 +117,11 @@ void cli_exec_cmd(const char* cmd, int size) {
         int ret = 0;
         char* arg_ptr = NULL;
         char* dst_ptr = cli_cmd_buf;
+
         cli_cmd_argc = 0;
         flags = 0x02;
 
-        printf("exec: \'%s\'\r\n", cmd);
+        // printf("exec: \'%s\'\r\n", cmd);
 
         if (*cmd == ' ') {
             while (*cmd == ' ') {
