@@ -10,7 +10,7 @@
 #include "stm32f1xx_gpio.h"
 #include "hal_gpio.h"
 #include "cli.h"
-
+#include "hal_tim.h"
 
 #define DO_NOT_USE      0   /* Do not use */
 #define IN_EN      0x01 /* Input configuration enabled */
@@ -475,9 +475,46 @@ CLI_COMMAND_MAIN(gpio_get)(int argc, char** argv) {
 
 CLI_COMMAND(gpio_get, "Print GPIO info", NULL)
 
+/* GPIO pulse command*/
+
+CLI_COMMAND_MAIN(gpio_pulse)(int argc, char** argv) {
+    if (argc < 4) {
+        printf("USAGE: gpio_set <port> <pin> <time ms>\r\n");
+        return -1;
+    }
+
+    char p = *(*(argv + 1));
+    int n = atoi(*(argv + 2));
+    int t =  atoi(*(argv + 3));
+    GPIO_Pin_t pin;
+    cli_gpio_pin_t* pin_dsc_ptr = cli_gpio_pin_get(&pin, p, n);
+    int dir = hal_gpio_pin_get_dir(&pin);
+    int val = -1;
+
+    if (dir != HAL_GPIO_DIR_OUT) {
+        const char* dir_str = cli_gpio_pin_dir_str(dir);
+        printf("P%c%d is not set as out\r\n");
+        return -1;
+    } else if (t < 0) {
+        printf("Bad value argument: \'%d\'\r\n", t);
+        return -1;
+    }
+
+    printf("pulse on %c %d. pulse len: %d ms\r\n", p, n, t);
+    hal_gpio_pin_toggle(&pin);
+    hal_sys_time_delay_ms(t);
+    hal_gpio_pin_toggle(&pin);
+
+    return 0;
+}
+
+CLI_COMMAND(gpio_pulse, "Make pulse on gpio output", NULL)
+
 void cli_gpio_init(void) {
     CLI_REGISTER_COMMAND(gpio_info)
     CLI_REGISTER_COMMAND(gpio_dir)
     CLI_REGISTER_COMMAND(gpio_set)
     CLI_REGISTER_COMMAND(gpio_get)
+    CLI_REGISTER_COMMAND(gpio_pulse)
 }
+
