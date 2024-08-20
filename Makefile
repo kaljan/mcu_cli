@@ -19,8 +19,10 @@ endif
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S -g
 ECHO = echo
+ECHOE = /usr/bin/echo -e
+ECHOEN = /usr/bin/echo -en
 MKDIR = mkdir
-RM = rm -fRv
+RM = rm -fR
 
 # -------------------------------------------------------------------
 # Project definitions
@@ -28,6 +30,15 @@ RM = rm -fRv
 # Target name
 ifndef TARGET
 TARGET = mcu_cli
+endif
+
+# Default MCU name
+ifndef MCU_NAME
+MCU_NAME = stm32f103c8
+endif
+
+ifdef MCU_NAME
+TARGET := $(TARGET)_$(MCU_NAME)
 endif
 
 # Project path
@@ -55,8 +66,13 @@ endif
 # Source files
 # -------------------------------------------------------------------
 # ASM sources
-ASM_SOURCES = \
-	$(CMSIS_DEV_STM32F1XX_DIR)/Source/Templates/gcc/startup_stm32f103c8tx.s
+ifeq ($(MCU_NAME), stm32f103c8)
+STARTUP_FILE = $(CMSIS_DEV_STM32F1XX_DIR)/Source/Templates/gcc/startup_stm32f103c8tx.s
+else ifeq ($(MCU_NAME), stm32f103cb)
+STARTUP_FILE = $(CMSIS_DEV_STM32F1XX_DIR)/Source/Templates/gcc/startup_stm32f103cbtx.s
+endif
+
+ASM_SOURCES = $(STARTUP_FILE)
 
 # C sources
 SYSTEM_CSRC = \
@@ -149,8 +165,13 @@ C_DEFINES = \
 
 ifeq ($(DEBUG), 1)
 C_DEFINES += \
-	-DDEBUG
+	-DDEBUG=1
+else ifeq ($(RELEASE), 1)
+C_DEFINES += \
+	-DRELEASE=1
 endif
+
+
 
 # -------------------------------------------------------------------
 # Warning flags
@@ -241,7 +262,12 @@ CFLAGS = $(TARGET_ARCH) -std=gnu11 $(C_DEFINES) $(C_INCLUDES) $(C_OPTFLAGS) $(C_
 # Linker flags
 # -------------------------------------------------------------------
 # Linker script
+ifeq ($(MCU_NAME), stm32f103c8)
 LDSCRIPT = $(CMSIS_DEV_STM32F1XX_DIR)/Source/Templates/gcc/linker/STM32F103C8TX_FLASH.ld
+else ifeq ($(MCU_NAME), stm32f103cb)
+LDSCRIPT = $(CMSIS_DEV_STM32F1XX_DIR)/Source/Templates/gcc/linker/STM32F103CBTX_FLASH.ld
+endif
+
 # libraries
 LIBDIR =
 LIBS =
@@ -291,7 +317,11 @@ $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR)
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 	@$(ECHO) "linking: "$@"; "$<
 	@$(CC) -o $@ $(LDFLAGS) $(OBJECTS)
-	$(SZ) $@
+	@$(ECHOE) "\e[1;35mSIZE \e[37m: \e[33m"$@
+	@$(ECHOEN) "\e[1;32m"
+	@$(SZ) $@
+	@$(ECHOEN) "\e[0m"
+	@$(ECHOE) "\e[1;35mMCU\e[37m : \e[36m"$(MCU_NAME)"\e[0m"
 
 # Create HEX
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
@@ -312,8 +342,29 @@ $(BUILD_DIR):
 # Clean up
 # -------------------------------------------------------------------
 clean:
-	@$(ECHO) "clean"
+	@$(ECHO) "clean; remove "$(BUILD_DIR)" directory"
 	@$(RM) $(BUILD_DIR)
+
+
+# -------------------------------------------------------------------
+# Print current config
+# -------------------------------------------------------------------
+target_info:
+	@${ECHOE} "\e[1;35mTARGET       \e[37m: \e[36m"$(TARGET)
+	@${ECHOE} "\e[1;35mMCU          \e[37m: \e[36m"$(MCU_NAME)
+	@${ECHOE} "\e[1;35mDEBUG        \e[37m: \e[33m"$(DEBUG)
+	@${ECHOE} "\e[1;35mRELEASE      \e[37m: \e[33m"$(RELEASE)
+	@${ECHOEN} "\e[1;35mPROJECT PATH \e[37m: \e[0;36m"
+	@pwd
+	@${ECHOE} "\e[1;35mBUILD_DIR    \e[37m: \e[36m"$(BUILD_DIR)
+	@${ECHOE} "\e[1;35mLDSCRIPT     \e[37m: \e[0;36m"$(LDSCRIPT)
+	@${ECHOE} "\e[1;35mSTARTUP_FILE \e[37m: \e[0;36m"$(STARTUP_FILE)
+	@${ECHOE} "\e[1;34mCOMPILER"
+	@${ECHOE} "\e[1;35mPREFIX       \e[37m: \e[0;36m"$(PREFIX)
+	@${ECHOE} "\e[1;35mPATH         \e[37m: \e[0;36m"$(GCC_PATH)
+	@${ECHOEN} "\e[1;35mVERSION      \e[37m: \e[0;33m"
+	@$(CC) --version
+	@${ECHOE} "\e[0m"
 
 # -------------------------------------------------------------------
 # Dependencies

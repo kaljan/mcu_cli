@@ -1,5 +1,23 @@
 # Command line interface for MCUs
 
+- [Command line interface for MCUs](#command-line-interface-for-mcus)
+  - [Hotkey support](#hotkey-support)
+  - [Pinout](#pinout)
+    - [`GPIOA`](#gpioa)
+    - [`GPIOB`](#gpiob)
+    - [`GPIOC`](#gpioc)
+    - [`GPIOD`](#gpiod)
+  - [Build (Ubuntu 20.04)](#build-ubuntu-2004)
+    - [Env setup](#env-setup)
+    - [Build](#build)
+  - [Flashing](#flashing)
+    - [Flashing](#flashing-1)
+  - [Build Scruipt](#build-scruipt)
+    - [Build for **Bluepill** based on STM32F103C8 with 64K flash](#build-for-bluepill-based-on-stm32f103c8-with-64k-flash)
+    - [Build for **Bluepill** based on STM32F103CB with 128K flash](#build-for-bluepill-based-on-stm32f103cb-with-128k-flash)
+    - [Build with config shell file](#build-with-config-shell-file)
+
+
 ## Hotkey support
 
 | **KEY**                   | **CODE**           | **FUNCTION**                          |
@@ -82,3 +100,166 @@
 | :---------: | :------: | :----------- |
 |      5      |  `PD0`   | `OSCI`       |
 |      6      |  `PD1`   | `OSCO`       |
+
+## Build (Ubuntu 20.04)
+
+**Toolchain**: [`Arm GNU Toolchain 13.2.rel1`](https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz?rev=e434b9ea4afc4ed7998329566b764309&hash=CA590209F5774EE1C96E6450E14A3E26)
+
+### Env setup
+
+Install depencies
+
+```bash
+sudo apt install build-essential make gcc git
+```
+
+[Download toolchain](https://developer.arm.com/downloads/-/gnu-rm)
+
+```bash
+wget -O ~/Downloads/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz \
+https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz?rev=e434b9ea4afc4ed7998329566b764309&hash=CA590209F5774EE1C96E6450E14A3E26
+```
+
+Create tools directory
+
+```bash
+mkdir -p $USER/opt
+```
+
+unpack it to `$(HOME)/opt` (or other directory)
+
+```bash
+tar -xvf ~/Downloads/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz -C $USER/opt/
+```
+
+### Build
+
+
+Clone repositories
+
+```bash
+git clone git@github.com:kaljan/mcu_cli.git
+cd mcu_cli
+submodule update --init --recursive
+```
+
+Setup environment:
+
+Get target name from project root directory name
+
+```bash
+export TARGET=${PWD##*/}
+```
+
+Debug
+
+```bash
+export DEBUG=1
+```
+
+Release
+
+```bash
+export RELEASE=1
+```
+
+If on **Bluepill** installed `STM32F103C8` (default)
+
+```bash
+export MCU_NAME=stm32f103c8
+```
+
+Or if `STM32F103CB` is installed
+
+```bash
+export MCU_NAME=stm32f103cb
+```
+
+Build
+
+```bash
+make
+```
+
+In directory `$TARGET"_"$MCU_NAME"_Debug"`
+
+```bash
+ls $TARGET"_"$MCU_NAME"_Debug"
+```
+
+You can find build artifacts.
+
+* `$TARGET"_"$MCU_NAME.bin`
+* `$TARGET"_"$MCU_NAME.hex`
+* `$TARGET"_"$MCU_NAME.elf`
+
+## Flashing
+
+* **In circuit debugger** : `ST-Link v2.1`
+* **Debug interface** : `SWD`
+* **`st-util` version** : `v1.8.0-dirty`
+
+[Installing `st-util`](https://github.com/stlink-org/stlink/blob/testing/doc/compiling.md)
+
+### Flashing
+
+```bash
+st-flash --reset write $TARGET"_"$MCU_NAME"_Debug/"$TARGET"_"$MCU_NAME".bin" 0x08000000
+```
+
+## Build Scruipt
+
+for building project you can use `build.sh` script
+
+### Build for **Bluepill** based on STM32F103C8 with 64K flash
+
+Release build
+
+```bash
+./build.sh
+# or
+./build -d=stm32f103c8
+# or
+./build -m=release
+# or
+./build -m=release -d=stm32f103c8
+```
+
+Debug build
+
+```bash
+./build.sh -m=debug
+# or
+./build -m=debug -d=stm32f103c8
+```
+
+### Build for **Bluepill** based on STM32F103CB with 128K flash
+
+Release build
+
+```bash
+./build -d=stm32f103cb
+# or
+./build -m=release -d=stm32f103cb
+```
+
+Debug build
+
+```bash
+./build -m=debug -d=stm32f103cb
+```
+
+### Build with config shell file
+
+if ./soruce/ directory you can find templates for build configs.
+With `-f` option you can use your own build config. For ex.
+
+Example config `path/to/your/config/file`
+```bash
+#!/bin/bash
+export MCU_NAME=stm32f103cb
+```
+
+```bash
+./build <other flags> -f path/to/your/config/file
+```

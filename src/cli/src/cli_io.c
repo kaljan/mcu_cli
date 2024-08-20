@@ -659,11 +659,12 @@ void cli_start(void) {
     cli_register_commands();
     cli_help_cmd_init();
 
-    printf("\r\n%sVersion %d.%d.%d\r\n\r\n%s "
+    printf("\r\n%sVersion %d.%d.%d %s\r\n\r\n%s "
         , hello_msg
         , MCLI_VERSION_MAJOR
         , MCLI_VERSION_MINOR
         , MCLI_VERSION_BUILD
+        , BUILD_MODE
         , cli_io_prompt);
 
     fflush(stdout);

@@ -15,4 +15,6 @@
 #define MCLI_DATE_STR        "2024-07-06"
 #define MCLI_TIME_STR        "01:08:08"
 
+extern const char* BUILD_MODE;
+
 #endif /* MCLI_VERSION_H */

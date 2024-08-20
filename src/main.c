@@ -21,6 +21,15 @@
 #include <string.h>
 #include <ctype.h>
 
+#if defined DEBUG || defined RELEASE
+#if DEBUG == 1
+const char* BUILD_MODE="debug";
+#elif RELEASE == 1
+const char* BUILD_MODE="release";
+#else
+const char* BUILD_MODE="build";
+#endif
+#endif
 
 static void RCU_EventCallback(void* context, uint32_t event) {
     clcd_clear();
@@ -45,10 +54,11 @@ int main(void) {
 
     clcd_init();
     clcd_print(0x00
-        , "CLI develop\nv%d.%d.%d"
+        , "v%d.%d.%d %s"
         , MCLI_VERSION_MAJOR
         , MCLI_VERSION_MINOR
-        , MCLI_VERSION_BUILD);
+        , MCLI_VERSION_BUILD
+        , BUILD_MODE);
 
     RCU_Initialize();
     RCU_SetCallback(RCU_EventCallback, NULL);

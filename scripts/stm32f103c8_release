@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export BUILD_MODE="release"
+export MCU_NAME="stm32f103c8"
