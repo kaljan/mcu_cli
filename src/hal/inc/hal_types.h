@@ -14,4 +14,6 @@
 typedef void* hal_object_t;
 typedef void* hal_ptr_t;
 
+typedef void (*hal_callback_t)(void*);
+
 #endif /* HAL_TYPES_H */

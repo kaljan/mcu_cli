@@ -15,10 +15,10 @@
 #include <stdarg.h>
 
 /** Text format buffer size */
-#define CLCD_FMT_BUF_SIZE         CLCD_WIDTH * CLCD_LINES
+#define CLCD_FMT_BUF_SIZE       CLCD_WIDTH * CLCD_LINES
 
 /** Second line bit for DDRAM address */
-#define CLCD_SECOND_LINE          0x40
+#define CLCD_SECOND_LINE        0x40
 
 #define CLCD_INIT_FLAG          0x01
 #define CLCD_DISPLAY_ON         0x02
@@ -45,11 +45,8 @@ void clcd_power_enable(void) {
 }
 
 void clcd_power_disable(void) {
-    // clcd_port_write(0, 0);
-    // clcd_port_write(CLCD_INSTRUCTION, CLCD_ON_OFF_CTL);
-    // clcd_delay_us(CLCD_CMD_DELAY_US);
-
     clcd_port_reset();
+    clcd_delay_us(CLCD_CMD_DELAY_US);
     hal_gpio_pin_reset(pwren_pin);
     m_clcd_flags = 0;
 }
@@ -78,15 +75,6 @@ void clcd_init(void) {
     if ((m_clcd_flags & CLCD_INIT_FLAG) == CLCD_INIT_FLAG) {
         return;
     }
-
-#if 0 //(HAL_CLCD_PWREN == HAL_ENABLED)
-    if ((m_clcd_flags & CLCD_PWR_EN_INIT) != CLCD_PWR_EN_INIT) {
-        m_clcd_flags |= CLCD_PWR_EN_INIT;
-        clcd_pwren_init();
-        clcd_delay_us(CLCD_POWER_ON_DELAY_US);
-        clcd_power_enable();
-    }
-#endif
 
     m_clcd_flags = CLCD_INIT_FLAG | CLCD_DISPLAY_ON;
 

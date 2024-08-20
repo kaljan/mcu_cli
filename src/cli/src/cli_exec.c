@@ -11,12 +11,12 @@
 #include "cli_history.h"
 
 
-static int cli_cmd_argc = 0;              /* count of arguments */
-static char* cli_cmd_argv[CLI_ARGV_SIZE + 1]; /* array of argument pointers */
-static char cli_cmd_buf[CLI_BUF_SIZE];    /* buffer for command name and its arguments */
+static int cli_cmd_argc = 0;                    /* count of arguments */
+static char* cli_cmd_argv[CLI_ARGV_SIZE + 1];   /* array of argument pointers */
+static char cli_cmd_buf[CLI_BUF_SIZE];          /* buffer for command name and its arguments */
 
-static cli_node_t* cli_exec_head = NULL;  /* pointer to head of command list */
-static cli_node_t* cli_exec_tail = NULL;  /* pointer to tail of command list */
+static cli_node_t* cli_exec_head = NULL;        /* pointer to head of command list */
+static cli_node_t* cli_exec_tail = NULL;        /* pointer to tail of command list */
 
 /**
  * Add command to list
@@ -136,7 +136,6 @@ void cli_exec_cmd(const char* cmd, int size) {
 
         while (*cmd != '\0') {
             if (*cmd == '\\') {
-                // cmd++;
                 if ((flags & 0x04) == 0x04) {
                     if (*(cmd + 1) == '\"') {
                         cmd++;
@@ -184,11 +183,6 @@ void cli_exec_cmd(const char* cmd, int size) {
                     cli_cmd_argv[cli_cmd_argc++] = dst_ptr;
                     cli_cmd_argv[cli_cmd_argc] = NULL;
                 }
-                // cli_cmd_argc++;
-                // if (cli_cmd_argc < CLI_ARGV_SIZE - 1) {
-                // } else {
-                //     break;
-                // }
             }
             dst_ptr++;
             cmd++;

@@ -44,8 +44,11 @@ int main(void) {
     clcd_power_enable();
 
     clcd_init();
-    clcd_print(0x00, "CLI develop\nv%d.%d.%d"
-        , MCLI_VERSION_MAJOR, MCLI_VERSION_MINOR, MCLI_VERSION_BUILD);
+    clcd_print(0x00
+        , "CLI develop\nv%d.%d.%d"
+        , MCLI_VERSION_MAJOR
+        , MCLI_VERSION_MINOR
+        , MCLI_VERSION_BUILD);
 
     RCU_Initialize();
     RCU_SetCallback(RCU_EventCallback, NULL);

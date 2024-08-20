@@ -74,10 +74,7 @@ CLI_COMMAND_MAIN(clcd_power)(int argc, char** argv) {
     return 0;
 }
 
-CLI_COMMAND(clcd_power,
-    "Print text to LCD",
-    NULL
-)
+CLI_COMMAND(clcd_power, "LCD power on/off control", NULL)
 #endif
 
 void cli_clcd_init(void) {

@@ -177,19 +177,6 @@ uint32_t RCC_GetPeriphClock(uint32_t pAddr) {
     return ret;
 }
 
-/*
-
-1000 | 000 | 0 | | 0000 0000 0000 0010 | 2
-1001 | 001 | 1 | | 0000 0000 0000 0100 | 4
-1010 | 010 | 2 | | 0000 0000 0000 1000 | 8
-1011 | 011 | 3 | | 0000 0000 0001 0000 | 16
-1100 | 100 | 5 | | 0000 0000 0100 0000 | 64
-1101 | 101 | 6 | | 0000 0000 1000 0000 | 128
-1110 | 110 | 7 | | 0000 0001 0000 0000 | 256
-1111 | 111 | 8 | | 0000 0010 0000 0000 | 512
-*/
-
-
 int RCC_LSE_Enable(void) {
     int timeout = RCC_TIMEOUT;
     HAL_SET_BITS(RCC->BDCR, RCC_BDCR_LSEON);
@@ -205,9 +192,6 @@ int RCC_LSE_Enable(void) {
 
     return HAL_SUCCESS;
 }
-
-
-
 
 #ifdef USART1
 void RCC_USART1_EnableClock(int enable) {

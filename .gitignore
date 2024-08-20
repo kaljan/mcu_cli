@@ -4,6 +4,7 @@
 *.bkup*
 *_Debug/
 *_Rebug/
+*_Build/
 temp/
 tmp/
 *.svd

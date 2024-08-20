@@ -54,4 +54,19 @@
         HAL_SET_BITS(reg, mask); \
     }
 
+#define HAL_ASSERT_PTR(ptr) \
+    if (ptr == NULL) { \
+        return; \
+    }
+
+#define HAL_ASSERT_PTR_RET(ptr, ret) \
+    if (ptr == NULL) { \
+        return ret; \
+    }
+
+#define HAL_CONEXT(type, arg) type* context = (type*)(arg)
+
+#define HAL_OBJECT(type, name, arg) type* name = (type*)(arg)
+
+
 #endif /* HAL_DEFS_H */
