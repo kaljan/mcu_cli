@@ -160,6 +160,7 @@ C_DEFINES = \
 	-DLSI_VALUE=40000 \
 	-DVDD_VALUE=3300 \
 	-DTOOLS_OPT=\"tools_config.h\" \
+	-DMCU_NAME=\"$(MCU_NAME)\" \
 	-DCLI_OPT=\"cli_config.h\"
 
 

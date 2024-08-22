@@ -659,14 +659,38 @@ void cli_start(void) {
     cli_register_commands();
     cli_help_cmd_init();
 
-    printf("\r\n%sVersion %d.%d.%d %s\r\n\r\n%s "
+#ifdef VERSION_NAME
+    printf(
+        "\r\n%s\r\n"
+        "PROJECT : %s\r\n"
+        "MCU     : %s\r\n"
+        "VERSION : %d.%d.%d_%s %s\r\n\r\n"
+        "%s "
         , hello_msg
-        , MCLI_VERSION_MAJOR
-        , MCLI_VERSION_MINOR
-        , MCLI_VERSION_BUILD
+        , PROJECT_NAME
+        , MCU_NAME
+        , VERSION_MAJOR
+        , VERSION_MINOR
+        , VERSION_BUILD
+        , VERSION_NAME
         , BUILD_MODE
         , cli_io_prompt);
-
+#else
+    printf(
+        "\r\n%s\r\n"
+        "PROJECT : %s\r\n"
+        "MCU     : %s\r\n"
+        "VERSION : %d.%d.%d %s\r\n\r\n"
+        "%s "
+        , hello_msg
+        , PROJECT_NAME
+        , MCU_NAME
+        , VERSION_MAJOR
+        , VERSION_MINOR
+        , VERSION_BUILD
+        , BUILD_MODE
+        , cli_io_prompt);
+#endif
     fflush(stdout);
 }
 
