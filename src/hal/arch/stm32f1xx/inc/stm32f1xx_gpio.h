@@ -66,24 +66,24 @@
 #define GPIO_PIN_PULL_DOWN                  (uint32_t)2U
 #define GPIO_PIN_PULL_MASK                  (uint32_t)0x03U
 
-typedef struct GPIO_PinConfig {
+typedef struct hal_gpio_pin_config {
     uint32_t mode;
     uint32_t speed;
     uint32_t outType;
     uint32_t pull;
-} GPIO_PinConfig_t;
+} hal_gpio_pin_config_t;
 
-typedef struct GPIO_Pin {
+typedef struct hal_gpio_pin {
     GPIO_TypeDef* port;
     uint32_t pin;
-} GPIO_Pin_t;
+} hal_gpio_pin_t;
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-int GPIO_PinSetConfig(GPIO_TypeDef* port, uint32_t pin, const GPIO_PinConfig_t* config);
-int GPIO_PinGetConfig(GPIO_TypeDef* port, uint32_t pin, GPIO_PinConfig_t* config);
+int hal_gpio_pin_set_config(GPIO_TypeDef* port, uint32_t pin, const hal_gpio_pin_config_t* config);
+int hal_gpio_pin_get_config(GPIO_TypeDef* port, uint32_t pin, hal_gpio_pin_config_t* config);
 
 #ifdef __cplusplus
 }

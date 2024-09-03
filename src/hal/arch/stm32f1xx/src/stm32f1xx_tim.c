@@ -34,7 +34,7 @@
 #define SYS_TIMER                   TIM2
 #define SYS_TIMER_IRQ               TIM2_IRQn
 #define SYS_TIMER_IRQ_HANDLER       TIM2_IRQHandler
-#define SYS_TIMER_ENABLE_CLOCK(e)   RCC_TIM2_EnableClock(e)
+#define SYS_TIMER_ENABLE_CLOCK(e)   hal_rcc_tim2_enable_clock(e)
 
 static uint64_t m_time = 0;
 

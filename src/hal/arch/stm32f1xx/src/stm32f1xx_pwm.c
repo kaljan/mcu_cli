@@ -18,7 +18,7 @@ struct hal_pwm {
     TIM_TypeDef* handle;
     hal_pwm_irq_t h_pwm_irq;
     hal_pwm_irq_t h_tim_up_irq;
-    DMA_Channel_t* dma;
+    hal_dma_channel_t* dma;
     const uint16_t* buf;
     uint32_t buf_size;
 };
@@ -66,7 +66,7 @@ int hal_pwm_init(hal_pwm_t* context, hal_pwm_config_t* config) {
         return -1;
     }
 
-    tim_clock = RCC_GetPeriphClock(context->handle);
+    tim_clock = hal_rcc_get_periph_clock(context->handle);
     if (tim_clock == 0) {
         return -1;
     }

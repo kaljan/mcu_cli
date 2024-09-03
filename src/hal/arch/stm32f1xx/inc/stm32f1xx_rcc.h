@@ -149,49 +149,49 @@
 #define RCC_RTC_CLKSRC_OFFSET               (uint32_t)8U
 
 
-typedef struct RCC_ClockConfig {
-    uint32_t SYSCLK_Src;
-    uint32_t PLL_Src;
-    uint32_t MCO_Src;
-    uint32_t HSE_Div;
-    uint32_t PLL_Mul;
-    uint32_t AHB_Pre;
-    uint32_t APB1_Pre;
-    uint32_t APB2_Pre;
-} RCC_ClockConfig_t;
+typedef struct hal_rcc_clock_config {
+    uint32_t sysclk_src;
+    uint32_t pll_src;
+    uint32_t mco_src;
+    uint32_t hse_div;
+    uint32_t pll_mul;
+    uint32_t ahb_pre;
+    uint32_t apb1_pre;
+    uint32_t apb2_pre;
+} hal_rcc_clock_config_t;
 
-typedef struct RCC_ClockFreq {
+typedef struct hal_rcc_clock_freq {
     uint32_t SYSCLK;
     uint32_t AHB;
     uint32_t APB1;
     uint32_t APB2;
-} RCC_ClockFreq_t;
+} hal_rcc_clock_freq_t;
 
-typedef void (*RCC_EnableClockFunc_t)(int);
+typedef void (*hal_rcc_cken_func_t)(int);
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-int RCC_ClockSetConfig(RCC_ClockConfig_t* config);
-int RCC_ClockGetFreq(RCC_ClockFreq_t* dst);
-uint32_t RCC_GetPeriphClock(uint32_t pAddr);
-int RCC_LSE_Enable(void);
+int hal_rcc_set_clock_config(hal_rcc_clock_config_t* config);
+int hal_rcc_clock_get_freq(hal_rcc_clock_freq_t* dst);
+uint32_t hal_rcc_get_periph_clock(uint32_t pAddr);
+int hal_rcc_lse_enable(void);
 
 #ifdef USART1
-void RCC_USART1_EnableClock(int enable);
+void hal_rcc_usart1_enable_clock(int enable);
 #endif /* USART1 */
 
 #ifdef USART2
-void RCC_USART2_EnableClock(int enable);
+void hal_rcc_usart2_enable_clock(int enable);
 #endif /* USART2 */
 
 #ifdef USART3
-void RCC_USART3_EnableClock(int enable);
+void hal_rcc_usart3_enable_clock(int enable);
 #endif /* USART3 */
 
 #ifdef TIM2
-void RCC_TIM2_EnableClock(int enable);
+void hal_rcc_tim2_enable_clock(int enable);
 #endif
 
 #ifdef __cplusplus

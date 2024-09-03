@@ -71,7 +71,7 @@ static inline uint32_t UART_CalcBaud(uint32_t baud, uint32_t pclk) {
 }
 
 static void UART_Configure(USART_TypeDef * handle, uint32_t baudrate) {
-    uint32_t pclk = RCC_GetPeriphClock((uint32_t)handle);
+    uint32_t pclk = hal_rcc_get_periph_clock((uint32_t)handle);
 
     /* USART Config. TODO implement */
     /* Set 8 bit data width */
@@ -198,17 +198,17 @@ static void UART2_EnableGPIO(int enable) {
     if (enable == 0) {
 
     } else {
-        GPIO_PinConfig_t cfg = {
+        hal_gpio_pin_config_t cfg = {
             .mode = GPIO_PIN_MODE_ALTERNATE,
             .speed = GPIO_PIN_SPEED_HIGH,
             .outType = GPIO_PIN_OTYPE_PUSH_PULL,
             .pull = GPIO_PIN_PULL_UP,
         };
 
-        GPIO_PinSetConfig(UART2_TX_PORT, UART2_TX_PIN, &cfg);
+        hal_gpio_pin_set_config(UART2_TX_PORT, UART2_TX_PIN, &cfg);
 
         cfg.mode = GPIO_PIN_MODE_INPUT;
-        GPIO_PinSetConfig(UART2_RX_PORT, UART2_RX_PIN, &cfg);
+        hal_gpio_pin_set_config(UART2_RX_PORT, UART2_RX_PIN, &cfg);
     }
 }
 
@@ -236,7 +236,7 @@ static UART_t uart2_instance = {
         .head = 0,
         .tail = 0,
     },
-    .enableClock = RCC_USART2_EnableClock,
+    .enableClock = hal_rcc_usart2_enable_clock,
     .GPIO_Config = UART2_EnableGPIO,
 };
 

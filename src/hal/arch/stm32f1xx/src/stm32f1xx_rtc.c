@@ -26,7 +26,7 @@ int RTC_Initialize(void) {
 
     BKP_WriteDataRegister(RTC_BKP_INIT_WORD_INDEX, RTC_BKP_INIT_WORD);
 
-    if (RCC_LSE_Enable() != HAL_SUCCESS) {
+    if (hal_rcc_lse_enable() != HAL_SUCCESS) {
         return HAL_FAILED;
     }
 

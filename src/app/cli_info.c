@@ -13,8 +13,8 @@
 
 
 CLI_COMMAND_MAIN(info)(int argc, char** argv) {
-    RCC_ClockFreq_t ckcfg;
-    RCC_ClockGetFreq(&ckcfg);
+    hal_rcc_clock_freq_t ckcfg;
+    hal_rcc_clock_get_freq(&ckcfg);
     printf(
         "\r\nDEVICE INFO\r\n\r\n"
         "Revision ID   : 0x%04X\r\n"

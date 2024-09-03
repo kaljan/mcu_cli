@@ -107,7 +107,7 @@ static cli_gpio_port_t* cli_gpio_port_get(char c) {
     return ret;
 }
 
-static cli_gpio_pin_t* cli_gpio_pin_get(GPIO_Pin_t* dst, char c, int n) {
+static cli_gpio_pin_t* cli_gpio_pin_get(hal_gpio_pin_t* dst, char c, int n) {
     cli_gpio_pin_t* ret = NULL;
     if (NULL != dst) {
         cli_gpio_port_t* p = cli_gpio_port_get(c);
@@ -187,7 +187,7 @@ static const char gpio_port_letter(GPIO_TypeDef* GPIOx) {
     return 0;
 }
 
-static void gpio_pin_get_name(char* buf, size_t buf_size, GPIO_Pin_t* pin) {
+static void gpio_pin_get_name(char* buf, size_t buf_size, hal_gpio_pin_t* pin) {
     if (NULL != buf) {
         char p = gpio_port_letter(pin->port);
         if (p != 0) {
@@ -230,7 +230,7 @@ static uint32_t cli_table_append_cell(
     return i;
 }
 
-static void cli_gpio_pin_config_to_str(char* buf, uint32_t buf_size, GPIO_PinConfig_t* cfg) {
+static void cli_gpio_pin_config_to_str(char* buf, uint32_t buf_size, hal_gpio_pin_config_t* cfg) {
     if ((NULL != buf) && (buf_size > 0) && (NULL != cfg)) {
         struct data {
             uint32_t len;
@@ -262,13 +262,13 @@ static void cli_gpio_pin_config_to_str(char* buf, uint32_t buf_size, GPIO_PinCon
     }
 }
 
-static void cli_gpio_pin_str_info(char* buf, uint32_t buf_size, GPIO_Pin_t* pin, cli_gpio_pin_t* cli_pin) {
+static void cli_gpio_pin_str_info(char* buf, uint32_t buf_size, hal_gpio_pin_t* pin, cli_gpio_pin_t* cli_pin) {
     if ((NULL != cli_pin) && (pin != NULL) && (NULL != buf) && (buf_size > 0)) {
-        GPIO_PinConfig_t cfg;
+        hal_gpio_pin_config_t cfg;
         char pin_name[8];
         uint32_t cursor = 0;
 
-        GPIO_PinGetConfig(pin->port, pin->pin, &cfg);
+        hal_gpio_pin_get_config(pin->port, pin->pin, &cfg);
         gpio_pin_get_name(pin_name, 8, pin);
 
         snprintf(buf, buf_size, "%3d ", cli_pin->pin_no);
@@ -299,7 +299,7 @@ static void cli_gpio_pin_str_info(char* buf, uint32_t buf_size, GPIO_Pin_t* pin,
 
 
 static void cli_gpio_pin_print_info(char p, int n) {
-    GPIO_Pin_t gpio_pin = {NULL, 0};
+    hal_gpio_pin_t gpio_pin = {NULL, 0};
     cli_gpio_pin_t* cli_pin = cli_gpio_pin_get(&gpio_pin, p, n);
     if (NULL != cli_pin) {
         char str[64];
@@ -311,7 +311,7 @@ static void cli_gpio_pin_print_info(char p, int n) {
 static void cli_gpio_port_print_info(char p) {
     cli_gpio_port_t* port = cli_gpio_port_get(p);
     if ((NULL != port) && (NULL != port->pin_list)) {
-        GPIO_Pin_t pin = {port->port, 0};
+        hal_gpio_pin_t pin = {port->port, 0};
         char str[64];
         printf("  GPIO%c\r\n", toupper(p));
         for (int i = 0; i < port->pin_count; i++) {
@@ -367,7 +367,7 @@ CLI_COMMAND_MAIN(gpio_dir)(int argc, char** argv) {
     }
     char p = *(*(argv + 1));
     int n = atoi(*(argv + 2));
-    GPIO_Pin_t pin;
+    hal_gpio_pin_t pin;
     cli_gpio_pin_t* pin_dsc_ptr = cli_gpio_pin_get(&pin, p, n);
     if (NULL == pin_dsc_ptr) {
         printf("UNKNOWN GPIO: \'%c\' <%d>\r\n", p, n);
@@ -441,7 +441,7 @@ CLI_COMMAND_MAIN(gpio_set)(int argc, char** argv) {
     char p = *(*(argv + 1));
     int n = atoi(*(argv + 2));
     char v =  *(*(argv + 3));
-    GPIO_Pin_t pin;
+    hal_gpio_pin_t pin;
     cli_gpio_pin_t* pin_dsc_ptr = cli_gpio_pin_get(&pin, p, n);
     int dir = hal_gpio_pin_get_dir(&pin);
     int val = -1;
@@ -480,7 +480,7 @@ CLI_COMMAND_MAIN(gpio_get)(int argc, char** argv) {
 
     char p = *(*(argv + 1));
     int n = atoi(*(argv + 2));
-    GPIO_Pin_t pin;
+    hal_gpio_pin_t pin;
     cli_gpio_pin_t* pin_dsc_ptr = cli_gpio_pin_get(&pin, p, n);
     int dir = hal_gpio_pin_get_dir(&pin);
     int val = -1;
@@ -510,7 +510,7 @@ CLI_COMMAND_MAIN(gpio_pulse)(int argc, char** argv) {
     char p = *(*(argv + 1));
     int n = atoi(*(argv + 2));
     int t =  atoi(*(argv + 3));
-    GPIO_Pin_t pin;
+    hal_gpio_pin_t pin;
     cli_gpio_pin_t* pin_dsc_ptr = cli_gpio_pin_get(&pin, p, n);
     int dir = hal_gpio_pin_get_dir(&pin);
     int val = -1;

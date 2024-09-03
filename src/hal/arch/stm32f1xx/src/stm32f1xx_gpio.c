@@ -11,7 +11,7 @@
 #include "stm32f1xx_gpio.h"
 #include <string.h>
 
-int GPIO_PinSetConfig(GPIO_TypeDef* port, uint32_t pin, const GPIO_PinConfig_t* config) {
+int hal_gpio_pin_set_config(GPIO_TypeDef* port, uint32_t pin, const hal_gpio_pin_config_t* config) {
     if ((NULL == port) || (NULL == config)) {
         return HAL_FAILED;
     }
@@ -54,7 +54,7 @@ int GPIO_PinSetConfig(GPIO_TypeDef* port, uint32_t pin, const GPIO_PinConfig_t* 
     return HAL_SUCCESS;
 }
 
-int GPIO_PinGetConfig(GPIO_TypeDef* port, uint32_t pin, GPIO_PinConfig_t* config) {
+int hal_gpio_pin_get_config(GPIO_TypeDef* port, uint32_t pin, hal_gpio_pin_config_t* config) {
     if ((NULL == port) || (NULL == config)) {
         return HAL_FAILED;
     }
@@ -111,9 +111,9 @@ int GPIO_PinGetConfig(GPIO_TypeDef* port, uint32_t pin, GPIO_PinConfig_t* config
 }
 
 void hal_gpio_pin_set_dir(hal_object_t ctx, int dir) {
-    GPIO_Pin_t* context = (GPIO_Pin_t*)ctx;
-    GPIO_PinConfig_t cfg;
-    if ((NULL != context) && (GPIO_PinGetConfig(context->port, context->pin, &cfg) == HAL_SUCCESS)) {
+    hal_gpio_pin_t* context = (hal_gpio_pin_t*)ctx;
+    hal_gpio_pin_config_t cfg;
+    if ((NULL != context) && (hal_gpio_pin_get_config(context->port, context->pin, &cfg) == HAL_SUCCESS)) {
         if (dir == 0) {
             cfg.mode = GPIO_PIN_MODE_OUTPUT;
             cfg.speed = GPIO_PIN_SPEED_HIGH;
@@ -124,13 +124,13 @@ void hal_gpio_pin_set_dir(hal_object_t ctx, int dir) {
         }
     }
 
-    GPIO_PinSetConfig(context->port, context->pin, &cfg);
+    hal_gpio_pin_set_config(context->port, context->pin, &cfg);
 }
 
 int hal_gpio_pin_get_dir(hal_object_t ctx) {
-    GPIO_Pin_t* context = (GPIO_Pin_t*)ctx;
-    GPIO_PinConfig_t cfg;
-    if ((NULL != context) && (GPIO_PinGetConfig(context->port, context->pin, &cfg) == HAL_SUCCESS)) {
+    hal_gpio_pin_t* context = (hal_gpio_pin_t*)ctx;
+    hal_gpio_pin_config_t cfg;
+    if ((NULL != context) && (hal_gpio_pin_get_config(context->port, context->pin, &cfg) == HAL_SUCCESS)) {
         if (cfg.mode == GPIO_PIN_MODE_OUTPUT) {
             return HAL_GPIO_DIR_OUT;
         } else if (cfg.mode == GPIO_PIN_MODE_INPUT) {
@@ -141,21 +141,21 @@ int hal_gpio_pin_get_dir(hal_object_t ctx) {
 }
 
 void hal_gpio_pin_set(hal_object_t ctx) {
-    GPIO_Pin_t* context = (GPIO_Pin_t*)ctx;
+    hal_gpio_pin_t* context = (hal_gpio_pin_t*)ctx;
     if (GPIO_PIN_ASSERT(context)) {
         GPIO_PIN_SET((GPIO_TypeDef*)context->port, context->pin);
     }
 }
 
 void hal_gpio_pin_reset(hal_object_t ctx) {
-    GPIO_Pin_t* context = (GPIO_Pin_t*)ctx;
+    hal_gpio_pin_t* context = (hal_gpio_pin_t*)ctx;
     if (GPIO_PIN_ASSERT(context)) {
         GPIO_PIN_RESET((GPIO_TypeDef*)context->port, context->pin);
     }
 }
 
 void hal_gpio_pin_toggle(hal_object_t ctx) {
-    GPIO_Pin_t* context = (GPIO_Pin_t*)ctx;
+    hal_gpio_pin_t* context = (hal_gpio_pin_t*)ctx;
     if (GPIO_PIN_ASSERT(context)) {
         if (GPIO_IS_OUTPUT_PIN_SET((GPIO_TypeDef*)context->port, context->pin)) {
             GPIO_PIN_RESET((GPIO_TypeDef*)context->port, context->pin);
@@ -166,7 +166,7 @@ void hal_gpio_pin_toggle(hal_object_t ctx) {
 }
 
 void hal_gpio_pin_set_value(hal_object_t ctx, int value) {
-    GPIO_Pin_t* context = (GPIO_Pin_t*)ctx;
+    hal_gpio_pin_t* context = (hal_gpio_pin_t*)ctx;
     if (GPIO_PIN_ASSERT(context)) {
         if (0 == value) {
             GPIO_PIN_RESET((GPIO_TypeDef*)context->port, context->pin);
@@ -177,7 +177,7 @@ void hal_gpio_pin_set_value(hal_object_t ctx, int value) {
 }
 
 int hal_gpio_pin_get_out_value(hal_object_t ctx) {
-    GPIO_Pin_t* context = (GPIO_Pin_t*)ctx;
+    hal_gpio_pin_t* context = (hal_gpio_pin_t*)ctx;
     if (GPIO_PIN_ASSERT(context)) {
         return (GPIO_IS_OUTPUT_PIN_SET((GPIO_TypeDef*)context->port, context->pin)) ? 1 : 0;
     }
@@ -185,7 +185,7 @@ int hal_gpio_pin_get_out_value(hal_object_t ctx) {
 }
 
 int hal_gpio_pin_get_in_value(hal_object_t ctx) {
-    GPIO_Pin_t* context = (GPIO_Pin_t*)ctx;
+    hal_gpio_pin_t* context = (hal_gpio_pin_t*)ctx;
     if (GPIO_PIN_ASSERT(context)) {
         return (GPIO_IS_INPUT_PIN_SET((GPIO_TypeDef*)context->port, context->pin)) ? 1 : 0;
     }

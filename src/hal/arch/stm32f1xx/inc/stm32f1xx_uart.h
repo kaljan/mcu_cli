@@ -21,7 +21,7 @@ typedef struct UART {
     IRQn_Type irqn;
     tools_fifo_t rxFIFO;
     tools_fifo_t txFIFO;
-    RCC_EnableClockFunc_t enableClock;
+    hal_rcc_cken_func_t enableClock;
     void (*GPIO_Config)(int);
 } UART_t;
 

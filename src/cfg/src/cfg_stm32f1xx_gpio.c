@@ -11,7 +11,7 @@
 #include "cfg_stm32f1xx_mc6800.h"
 #include "hal_mc6800.h"
 
-// static GPIO_Pin_t gpio_array[] = {
+// static hal_gpio_pin_t gpio_array[] = {
 //     {GPIOA, 0},
 //     {GPIOA, 1},
 //     {GPIOA, 2},
@@ -31,27 +31,27 @@
 // };
 
 #if (HAL_CLCD_PWREN == HAL_ENABLED)
-static GPIO_Pin_t CLCD_PWR_EN_Pin = {.port = CLCD_PWREN_PORT, .pin = CLCD_PWREN_PIN,};
+static hal_gpio_pin_t CLCD_PWR_EN_Pin = {.port = CLCD_PWREN_PORT, .pin = CLCD_PWREN_PIN,};
 #endif
 
-static GPIO_Pin_t MC6800_E_Pin = {.port = MC6800_E_PORT, .pin = MC6800_E_PIN,};
-static GPIO_Pin_t MC6800_RS_Pin = {.port = MC6800_RS_PORT, .pin = MC6800_RS_PIN,};
+static hal_gpio_pin_t MC6800_E_Pin = {.port = MC6800_E_PORT, .pin = MC6800_E_PIN,};
+static hal_gpio_pin_t MC6800_RS_Pin = {.port = MC6800_RS_PORT, .pin = MC6800_RS_PIN,};
 
 #if (HAL_MC6800_READ == HAL_ENABLED)
-static GPIO_Pin_t MC6800_RW_Pin = {.port = MC6800_RW_PORT, .pin = MC6800_RW_PIN,};
+static hal_gpio_pin_t MC6800_RW_Pin = {.port = MC6800_RW_PORT, .pin = MC6800_RW_PIN,};
 #endif
 
 
 #if (HAL_MC6800_DATA_WIDTH == HAL_MC6800_DATA8)
-static GPIO_Pin_t MC6800_Data0 = {.port = MC6800_D0_PORT, .pin = MC6800_D0_PIN,};
-static GPIO_Pin_t MC6800_Data1 = {.port = MC6800_D1_PORT, .pin = MC6800_D1_PIN,};
-static GPIO_Pin_t MC6800_Data2 = {.port = MC6800_D2_PORT, .pin = MC6800_D2_PIN,};
-static GPIO_Pin_t MC6800_Data3 = {.port = MC6800_D3_PORT, .pin = MC6800_D3_PIN,};
+static hal_gpio_pin_t MC6800_Data0 = {.port = MC6800_D0_PORT, .pin = MC6800_D0_PIN,};
+static hal_gpio_pin_t MC6800_Data1 = {.port = MC6800_D1_PORT, .pin = MC6800_D1_PIN,};
+static hal_gpio_pin_t MC6800_Data2 = {.port = MC6800_D2_PORT, .pin = MC6800_D2_PIN,};
+static hal_gpio_pin_t MC6800_Data3 = {.port = MC6800_D3_PORT, .pin = MC6800_D3_PIN,};
 #endif
-static GPIO_Pin_t MC6800_Data4 = {.port = MC6800_D4_PORT, .pin = MC6800_D4_PIN,};
-static GPIO_Pin_t MC6800_Data5 = {.port = MC6800_D5_PORT, .pin = MC6800_D5_PIN,};
-static GPIO_Pin_t MC6800_Data6 = {.port = MC6800_D6_PORT, .pin = MC6800_D6_PIN,};
-static GPIO_Pin_t MC6800_Data7 = {.port = MC6800_D7_PORT, .pin = MC6800_D7_PIN,};
+static hal_gpio_pin_t MC6800_Data4 = {.port = MC6800_D4_PORT, .pin = MC6800_D4_PIN,};
+static hal_gpio_pin_t MC6800_Data5 = {.port = MC6800_D5_PORT, .pin = MC6800_D5_PIN,};
+static hal_gpio_pin_t MC6800_Data6 = {.port = MC6800_D6_PORT, .pin = MC6800_D6_PIN,};
+static hal_gpio_pin_t MC6800_Data7 = {.port = MC6800_D7_PORT, .pin = MC6800_D7_PIN,};
 
 
 static hal_mc6800_t hal_mc6800_instance = {

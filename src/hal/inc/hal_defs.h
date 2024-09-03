@@ -64,6 +64,18 @@
         return ret; \
     }
 
+#define HAL_ASSERT_OBJECT(type, name, ptr) \
+    type* name = (type*)ptr; \
+    if (ptr == NULL) { \
+        return; \
+    }
+
+#define HAL_ASSERT_OBJECT_RET(type, name, ptr, ret) \
+    type* name = (type*)ptr; \
+    if (ptr == NULL) { \
+        return; \
+    }
+
 #define HAL_CONEXT(type, arg) type* context = (type*)(arg)
 
 #define HAL_OBJECT(type, name, arg) type* name = (type*)(arg)

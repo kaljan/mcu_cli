@@ -25,34 +25,34 @@ static inline int RCC_EnableHSE(void) {
 }
 
 
-int RCC_ClockSetConfig(RCC_ClockConfig_t* config) {
+int hal_rcc_set_clock_config(hal_rcc_clock_config_t* config) {
     int timeout = RCC_TIMEOUT;
     if (NULL == config) {
         return HAL_FAILED;
     }
 
-    if (RCC_SYSCLK_SRC_HSE == config->SYSCLK_Src) {
+    if (RCC_SYSCLK_SRC_HSE == config->sysclk_src) {
         if (RCC_EnableHSE() != HAL_SUCCESS) {
             return HAL_FAILED;
         }
-    } else if (RCC_SYSCLK_SRC_PLL == config->SYSCLK_Src) {
+    } else if (RCC_SYSCLK_SRC_PLL == config->sysclk_src) {
 
-        if (RCC_PLL_SRC_HSE == config->PLL_Src) {
+        if (RCC_PLL_SRC_HSE == config->pll_src) {
             if (RCC_EnableHSE() != HAL_SUCCESS) {
                 return HAL_FAILED;
             }
 
             HAL_SET_BITS(RCC->CFGR, RCC_CFGR_PLLXTPRE_HSE_DIV2);
 
-            if (config->HSE_Div == RCC_HSE_PLL_DIV_1) {
+            if (config->hse_div == RCC_HSE_PLL_DIV_1) {
                 HAL_CLEAR_BITS(RCC->CFGR, RCC_CFGR_PLLXTPRE_HSE_DIV2);
-            } else if (config->HSE_Div == RCC_HSE_PLL_DIV_2) {
+            } else if (config->hse_div == RCC_HSE_PLL_DIV_2) {
                 HAL_SET_BITS(RCC->CFGR, RCC_CFGR_PLLXTPRE_HSE_DIV2);
             }
             HAL_SET_BITS(RCC->CFGR, RCC_CFGR_PLLSRC);
         }
 
-        HAL_MODIFY_FIELD(RCC->CFGR, config->PLL_Mul,
+        HAL_MODIFY_FIELD(RCC->CFGR, config->pll_mul,
             RCC_PLL_MUL_MASK, RCC_PLL_MUL_OFFSET);
 
         HAL_SET_BITS(RCC->CR, RCC_CR_PLLON);
@@ -66,19 +66,19 @@ int RCC_ClockSetConfig(RCC_ClockConfig_t* config) {
         }
     }
 
-    HAL_MODIFY_FIELD(RCC->CFGR, config->AHB_Pre,
+    HAL_MODIFY_FIELD(RCC->CFGR, config->ahb_pre,
         RCC_AHB_PRE_MASK, RCC_AHB_PRE_OFFSET);
 
-    HAL_MODIFY_FIELD(RCC->CFGR, config->APB1_Pre,
+    HAL_MODIFY_FIELD(RCC->CFGR, config->apb1_pre,
         RCC_APB_PRE_MASK, RCC_APB1_PRE_OFFSET);
 
-    HAL_MODIFY_FIELD(RCC->CFGR, config->APB2_Pre,
+    HAL_MODIFY_FIELD(RCC->CFGR, config->apb2_pre,
         RCC_APB_PRE_MASK, RCC_APB2_PRE_OFFSET);
 
-    HAL_MODIFY_FIELD(RCC->CFGR, config->SYSCLK_Src, RCC_SYSCLK_SRC_MASK, RCC_SYSCLK_SRC_SW_OFFSET);
+    HAL_MODIFY_FIELD(RCC->CFGR, config->sysclk_src, RCC_SYSCLK_SRC_MASK, RCC_SYSCLK_SRC_SW_OFFSET);
 
     timeout = RCC_TIMEOUT;
-    while (HAL_FIELD_NE(RCC->CFGR, config->SYSCLK_Src, RCC_SYSCLK_SRC_MASK, RCC_SYSCLK_SRC_SWS_OFFSET)) {
+    while (HAL_FIELD_NE(RCC->CFGR, config->sysclk_src, RCC_SYSCLK_SRC_MASK, RCC_SYSCLK_SRC_SWS_OFFSET)) {
         if (timeout <= 0) {
             return HAL_FAILED;
         }
@@ -96,7 +96,7 @@ uint32_t RCC_APB_ClockGetFreq(uint32_t sysclk, uint32_t pre) {
     }
 }
 
-int RCC_ClockGetFreq(RCC_ClockFreq_t* dst) {
+int hal_rcc_clock_get_freq(hal_rcc_clock_freq_t* dst) {
     if (NULL == dst) {
         return HAL_FAILED;
     }
@@ -161,10 +161,10 @@ int RCC_ClockGetFreq(RCC_ClockFreq_t* dst) {
     return HAL_SUCCESS;
 }
 
-uint32_t RCC_GetPeriphClock(uint32_t pAddr) {
-    RCC_ClockFreq_t ckf;
+uint32_t hal_rcc_get_periph_clock(uint32_t pAddr) {
+    hal_rcc_clock_freq_t ckf;
     uint32_t ret = 0;
-    if (RCC_ClockGetFreq(&ckf) == HAL_SUCCESS) {
+    if (hal_rcc_clock_get_freq(&ckf) == HAL_SUCCESS) {
         if (((0xA0000000 <= pAddr) && (0xA0000FFF >= pAddr)) ||
             ((0x40018000 <= pAddr) && (0x5003FFFF >= pAddr))) {
             ret = ckf.AHB;
@@ -177,7 +177,7 @@ uint32_t RCC_GetPeriphClock(uint32_t pAddr) {
     return ret;
 }
 
-int RCC_LSE_Enable(void) {
+int hal_rcc_lse_enable(void) {
     int timeout = RCC_TIMEOUT;
     HAL_SET_BITS(RCC->BDCR, RCC_BDCR_LSEON);
     while (HAL_READ_BITS(RCC->BDCR, RCC_BDCR_LSEON)) {
@@ -194,25 +194,25 @@ int RCC_LSE_Enable(void) {
 }
 
 #ifdef USART1
-void RCC_USART1_EnableClock(int enable) {
+void hal_rcc_usart1_enable_clock(int enable) {
     HAL_ENABLE_BIT(RCC->APB2ENR, RCC_APB2ENR_USART1EN, enable)
 }
 #endif /* USART1 */
 
 #ifdef USART2
-void RCC_USART2_EnableClock(int enable) {
+void hal_rcc_usart2_enable_clock(int enable) {
     HAL_ENABLE_BIT(RCC->APB1ENR, RCC_APB1ENR_USART2EN, enable)
 }
 #endif /* USART2 */
 
 #ifdef USART3
-void RCC_USART3_EnableClock(int enable) {
+void hal_rcc_usart3_enable_clock(int enable) {
     HAL_ENABLE_BIT(RCC->APB1ENR, RCC_APB1ENR_USART3EN, enable)
 }
 #endif /* USART3 */
 
 #ifdef TIM2
-void RCC_TIM2_EnableClock(int enable) {
+void hal_rcc_tim2_enable_clock(int enable) {
     HAL_ENABLE_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM2EN, enable)
 }
 #endif

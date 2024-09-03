@@ -14,27 +14,27 @@
 #include "hal_tim.h"
 
 int hal_init(void) {
-    RCC_ClockConfig_t RCC_Config = {
-        .SYSCLK_Src = RCC_SYSCLK_SRC_PLL,
-        .PLL_Src = RCC_PLL_SRC_HSE,
-        .MCO_Src = RCC_MCO_DISABLED,
-        .HSE_Div = RCC_HSE_PLL_DIV_1,
-        .PLL_Mul = RCC_PLL_MUL_9,
-        .AHB_Pre = RCC_AHB_PRE_NONE,
-        .APB1_Pre = RCC_APB_PRE_2,
-        .APB2_Pre = RCC_APB_PRE_NONE,
+    hal_rcc_clock_config_t RCC_Config = {
+        .sysclk_src = RCC_SYSCLK_SRC_PLL,
+        .pll_src = RCC_PLL_SRC_HSE,
+        .mco_src = RCC_MCO_DISABLED,
+        .hse_div = RCC_HSE_PLL_DIV_1,
+        .pll_mul = RCC_PLL_MUL_9,
+        .ahb_pre = RCC_AHB_PRE_NONE,
+        .apb1_pre = RCC_APB_PRE_2,
+        .apb2_pre = RCC_APB_PRE_NONE,
     };
 
     if (FLASH_SetLatency(FLASH_ACR_LATENCY_2) != HAL_SUCCESS) {
         return HAL_FAILED;
     }
 
-    if (RCC_ClockSetConfig(&RCC_Config) != HAL_SUCCESS) {
+    if (hal_rcc_set_clock_config(&RCC_Config) != HAL_SUCCESS) {
         return HAL_FAILED;
     }
 
-    RCC_ClockFreq_t clockFreq = {0, 0, 0, 0};
-    RCC_ClockGetFreq(&clockFreq);
+    hal_rcc_clock_freq_t clockFreq = {0, 0, 0, 0};
+    hal_rcc_clock_get_freq(&clockFreq);
 
     RCC_GPIOA_CLOCK_ENABLE();
     RCC_GPIOB_CLOCK_ENABLE();

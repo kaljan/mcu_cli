@@ -100,14 +100,14 @@ void RCU_Initialize(void) {
 
     RCU_TIM_ENABLE_CLOCK();
 
-    GPIO_PinConfig_t gpio_config = {
+    hal_gpio_pin_config_t gpio_config = {
         .mode = GPIO_PIN_MODE_INPUT,
         .speed = GPIO_PIN_SPEED_HIGH,
         .outType = GPIO_PIN_OTYPE_PUSH_PULL,
         .pull = GPIO_PIN_PULL_UP
     };
 
-    GPIO_PinSetConfig(RCU_GPIO_PORT, RCU_GPIO_PIN, &gpio_config);
+    hal_gpio_pin_set_config(RCU_GPIO_PORT, RCU_GPIO_PIN, &gpio_config);
 
     RCU_GPIO_AF_REMAP();
 
